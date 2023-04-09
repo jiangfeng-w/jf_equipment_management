@@ -6,7 +6,6 @@
             <el-form
                 ref="loginFormRef"
                 :model="loginForm"
-                status-icon
                 :rules="loginRules"
                 label-width="0"
                 class="loginForm"
@@ -27,6 +26,7 @@
                         type="password"
                         :prefix-icon="Lock"
                         placeholder="请输入密码"
+                        show-password
                         @keyup.enter="submitForm()"
                     />
                 </el-form-item>
@@ -61,7 +61,7 @@
     const loginFormRef = ref()
     // 登录表单校验规则
     const loginRules = reactive({
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
     })
 
@@ -87,6 +87,7 @@
                 //     .catch(err => {
                 //         ElMessage.error(err.response.data.message)
                 //     })
+                localStorage.setItem('token', 'fsdfdf')
                 router.push('/home')
             }
         })
