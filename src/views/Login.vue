@@ -11,18 +11,18 @@
                 class="loginForm"
             >
                 <!-- 用户名 -->
-                <el-form-item prop="username">
+                <el-form-item prop="user_number">
                     <el-input
-                        v-model="loginForm.username"
+                        v-model="loginForm.user_number"
                         :prefix-icon="User"
                         placeholder="请输入用户名"
                         @keyup.enter="submitForm()"
                     />
                 </el-form-item>
                 <!-- 密码 -->
-                <el-form-item prop="password">
+                <el-form-item prop="user_password">
                     <el-input
-                        v-model="loginForm.password"
+                        v-model="loginForm.user_password"
                         type="password"
                         :prefix-icon="Lock"
                         placeholder="请输入密码"
@@ -48,21 +48,21 @@
     import { reactive, ref } from 'vue'
     import { useRouter } from 'vue-router'
     import { User, Lock } from '@element-plus/icons-vue'
-    // import axios from 'axios'
+    import axios from 'axios'
     import { useStore } from 'vuex'
     // import loseFocus from '@/util/loseFocus.js'
 
     //登录表单
     const loginForm = reactive({
-        username: 'admin',
-        password: 'admin',
+        user_number: '201931061460',
+        user_password: 'admin1',
     })
     // 表单绑定的响应式对象
     const loginFormRef = ref()
     // 登录表单校验规则
     const loginRules = reactive({
-        username: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        user_number: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
+        user_password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
     })
 
     const router = useRouter()
@@ -71,24 +71,21 @@
     const submitForm = () => {
         // loseFocus()
         // 表单校验
-        loginFormRef.value.validate(isValid => {
+        loginFormRef.value.validate(async isValid => {
             if (isValid) {
-                // axios
-                //     .post('/admin/user/login', loginForm)
-                //     .then(res => {
-                //         // console.log(res.data)
-                //         if (res.status === 200) {
-                //             router.push('/home')
-                //             // 存储用户信息
-                //             store.commit('changeUserInfo', res.data.data)
-                //             store.commit('changeGetterRouter', false)
-                //         }
-                //     })
-                //     .catch(err => {
-                //         ElMessage.error(err.response.data.message)
-                //     })
-                localStorage.setItem('token', 'fsdfdf')
-                router.push('/home')
+                // console.log(loginForm)
+                try {
+                    const res = await axios.post('/admin/user/login', loginForm)
+                    // console.log(res)
+                    if (res.status === 200) {
+                        router.push('/home')
+                        // 存储用户信息
+                        store.commit('changeUserInfo', res.data.data)
+                        // store.commit('changeGetterRouter', false)
+                    }
+                } catch (error) {
+                    ElMessage.error(error.response.data.message)
+                }
             }
         })
     }

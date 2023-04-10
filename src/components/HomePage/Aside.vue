@@ -36,7 +36,7 @@
                     <el-icon><Menu /></el-icon>
                     <span>老师管理</span>
                 </el-menu-item>
-                <el-menu-item index="/usermanage/devicemanager">
+                <el-menu-item index="/usermanage/deviceadmin">
                     <el-icon><Menu /></el-icon>
                     <span>设备管理员</span>
                 </el-menu-item>

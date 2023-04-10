@@ -54,12 +54,12 @@ const routes = [
             },
             // 设备管理员管理
             {
-                path: '/usermanage/devicemanager',
-                name: 'devicemanager',
+                path: '/usermanage/deviceadmin',
+                name: 'deviceadmin',
                 meta: {
                     zh_name: ['用户管理', '设备管理员管理'],
                 },
-                component: () => import('@/views/UserManage/DeviceManager.vue'),
+                component: () => import('@/views/UserManage/DeviceAdmin.vue'),
             },
         ],
     },

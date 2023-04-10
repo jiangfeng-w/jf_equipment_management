@@ -17,4 +17,13 @@ module.exports = defineConfig({
             }),
         ],
     },
+    // 跨域
+    devServer: {
+        proxy: {
+            '/admin': {
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+            },
+        },
+    },
 })
