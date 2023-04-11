@@ -11,18 +11,18 @@
                 class="loginForm"
             >
                 <!-- 用户名 -->
-                <el-form-item prop="user_number">
+                <el-form-item prop="number">
                     <el-input
-                        v-model="loginForm.user_number"
+                        v-model="loginForm.number"
                         :prefix-icon="User"
                         placeholder="请输入用户名"
                         @keyup.enter="submitForm()"
                     />
                 </el-form-item>
                 <!-- 密码 -->
-                <el-form-item prop="user_password">
+                <el-form-item prop="password">
                     <el-input
-                        v-model="loginForm.user_password"
+                        v-model="loginForm.password"
                         type="password"
                         :prefix-icon="Lock"
                         placeholder="请输入密码"
@@ -54,15 +54,15 @@
 
     //登录表单
     const loginForm = reactive({
-        user_number: '201931061460',
-        user_password: 'admin1',
+        number: '201931061460',
+        password: 'admin1',
     })
     // 表单绑定的响应式对象
     const loginFormRef = ref()
     // 登录表单校验规则
     const loginRules = reactive({
-        user_number: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
-        user_password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        number: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
     })
 
     const router = useRouter()
@@ -84,7 +84,7 @@
                         // store.commit('changeGetterRouter', false)
                     }
                 } catch (error) {
-                    ElMessage.error(error.response.data.message)
+                    ElMessage.error(error.response.data.error)
                 }
             }
         })

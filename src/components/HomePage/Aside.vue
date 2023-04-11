@@ -1,5 +1,5 @@
 <template>
-    <el-aside :width="'200px'">
+    <el-aside :width="store.state.isCollapse ? '64px' : '200px'">
         <p
             class="siteTitle"
             @click="goHome"
@@ -8,10 +8,11 @@
                 src="../../assets/logo.png"
                 alt=""
             />
-            <span>企业门户管理</span>
+            <span v-show="!store.state.isCollapse">大精设备管理系统</span>
         </p>
         <!-- 导航菜单 -->
         <el-menu
+            :collapse="store.state.isCollapse"
             :router="true"
             text-color="#fff"
             :default-active="route.fullPath"
@@ -26,19 +27,19 @@
             <el-sub-menu index="/usermanage">
                 <template #title>
                     <el-icon><UserFilled /></el-icon>
-                    <span>用户管理</span>
+                    <span v-show="!store.state.isCollapse">用户管理</span>
                 </template>
                 <el-menu-item index="/usermanage/student">
                     <el-icon><Menu /></el-icon>
-                    <span>学生管理</span>
+                    <span v-show="!store.state.isCollapse">学生管理</span>
                 </el-menu-item>
                 <el-menu-item index="/usermanage/teacher">
                     <el-icon><Menu /></el-icon>
-                    <span>老师管理</span>
+                    <span v-show="!store.state.isCollapse">老师管理</span>
                 </el-menu-item>
                 <el-menu-item index="/usermanage/deviceadmin">
                     <el-icon><Menu /></el-icon>
-                    <span>设备管理员</span>
+                    <span v-show="!store.state.isCollapse">设备管理员</span>
                 </el-menu-item>
             </el-sub-menu>
         </el-menu>
@@ -93,6 +94,8 @@
         overflow: hidden;
         span {
             margin-left: 10px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
         img {
             width: 20px;

@@ -4,22 +4,22 @@
             <!-- 左边 -->
             <div class="left">
                 <!-- 展开图标 -->
-                <!-- <div class="expandIcon">
+                <div class="expandIcon">
                     <el-icon
-                        v-show="$store.state.isCollapse"
+                        v-show="store.state.isCollapse"
                         @click="handleCollapsed"
                         size="25"
                     >
                         <Expand />
                     </el-icon>
                     <el-icon
-                        v-show="!$store.state.isCollapse"
+                        v-show="!store.state.isCollapse"
                         @click="handleCollapsed"
                         size="25"
                     >
                         <Fold />
                     </el-icon>
-                </div> -->
+                </div>
                 <BreadCrumb />
             </div>
 
@@ -28,7 +28,7 @@
                 <!-- 下拉菜单 -->
                 <el-dropdown>
                     <span class="el-dropdown-link">
-                        欢迎您，admin
+                        欢迎您，{{ store.state.userInfo.name }}
                         <el-avatar :src="'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'" />
                     </span>
                     <template #dropdown>
@@ -69,7 +69,7 @@
         router.push('/login')
         localStorage.removeItem('token')
         store.commit('clearBreadCrumb')
-        // store.commit('clearUserInfo')
+        store.commit('clearUserInfo')
     }
 </script>
 
@@ -88,16 +88,19 @@
             padding: 0 20px;
             box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
             // background-color: aqua;
+            .left {
+                display: flex;
+                align-items: center;
+                .expandIcon {
+                    cursor: pointer;
+                    font-weight: 100;
+                    margin-right: 20px;
+                }
+            }
             .right {
                 display: flex;
             }
         }
-        // .bottom {
-        //     // background-color: #bfa;
-        //     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
-        //     height: 30px;
-        //     padding: 0 20px;
-        // }
     }
     .el-dropdown-link {
         cursor: pointer;

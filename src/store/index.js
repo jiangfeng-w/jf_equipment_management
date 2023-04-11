@@ -7,6 +7,8 @@ export default createStore({
         BreadCrumb: [],
         // 用户信息
         userInfo: {},
+        // 侧边导航是否折叠
+        isCollapse: false,
     },
     getters: {},
     mutations: {
@@ -29,12 +31,15 @@ export default createStore({
         clearUserInfo(state) {
             state.userInfo = {}
         },
+        changeCollapse(state) {
+            state.isCollapse = !state.isCollapse
+        },
     },
     actions: {},
     modules: {},
-    // plugins: [
-    //     createPersistedState({
-    //         paths: ['BreadCrumb'], //控制是否持久化
-    //     }),
-    // ],
+    plugins: [
+        createPersistedState({
+            paths: ['userInfo'], //控制是否持久化
+        }),
+    ],
 })
