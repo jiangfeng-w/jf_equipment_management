@@ -29,9 +29,6 @@
         :data="tableList"
         style="width: 100%"
         table-layout="auto"
-        border
-        :cell-style="{ textAlign: 'center' }"
-        :header-cell-style="{ 'text-align': 'center' }"
         @selection-change="selectionLineChangeHandle"
     >
         <el-table-column type="selection"></el-table-column>
@@ -113,7 +110,7 @@
     <AddStudent
         v-model="addDalogVisible"
         @closeAddDialog="closeAddDialog()"
-        @getStudents="getTableList"
+        @getStudents="getTableList()"
     />
     <!-- 编辑学生对话框 -->
     <EditStudent
@@ -141,13 +138,12 @@
     //#endregion
 
     // 获取列表
-    const getTableList = async params => {
+    const getTableList = async () => {
         const res = await axios.get('/admin/student/list')
         tableList.splice(0, tableList.length, ...res.data.data)
         // console.log(tableList)
     }
     // 表格数据
-    const studentTableRef = ref()
     const tableList = reactive([])
     // 获取列表
     onMounted(() => {
@@ -217,7 +213,7 @@
                     getTableList()
                 }
             } catch (error) {
-                ElMessage.error(error.response.data.error)
+                // ElMessage.error(error.response.data.error)
                 getTableList()
             }
         } catch (error) {}

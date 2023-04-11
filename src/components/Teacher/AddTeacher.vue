@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="添加学生"
+        title="添加老师"
         width="45%"
         class="addDialog"
         @closed="closeDialog()"
@@ -11,15 +11,15 @@
             ref="addFormRef"
             :rules="addFormRules"
         >
-            <!-- 学号 -->
+            <!-- 学工号 -->
             <el-form-item
-                label="学号"
+                label="学工号"
                 prop="number"
                 type="number"
             >
                 <el-input
                     v-model.number="addForm.number"
-                    placeholder="请输入学号"
+                    placeholder="请输入学工号"
                 />
             </el-form-item>
             <!-- 密码 -->
@@ -29,7 +29,7 @@
             >
                 <el-input
                     v-model="addForm.password"
-                    placeholder="密码默认为学号后六位"
+                    placeholder="密码默认为学工号后六位"
                     type="password"
                     show-password
                 />
@@ -44,32 +44,18 @@
                     placeholder="请输入姓名"
                 />
             </el-form-item>
-            <!-- 年级 -->
+            <!-- 所属实验室 -->
             <el-form-item
-                label="年级"
-                prop="grade"
+                label="实验室"
+                prop="lab"
             >
                 <el-cascader
-                    v-model="addForm.grade"
-                    :options="grades"
+                    v-model="addForm.lab"
+                    :options="labs"
                     :props="props"
-                    placeholder="请选择年级"
-                    @change="gradeChange"
-                />
-            </el-form-item>
-            <!-- 专业 -->
-            <el-form-item
-                label="专业"
-                prop="major"
-                class="major"
-            >
-                <el-cascader
-                    v-model="addForm.major"
-                    :options="majors"
-                    :props="props"
-                    placeholder="请选择专业"
+                    placeholder="请选择实验室"
                     :show-all-levels="false"
-                    @change="majorChange"
+                    @change="labChange"
                 />
             </el-form-item>
         </el-form>
@@ -97,7 +83,7 @@
     // })
 
     // 注册emit
-    const emit = defineEmits(['closeAddDialog', 'getStudents'])
+    const emit = defineEmits(['closeAddDialog', 'getTeachers'])
 
     // 表单
 
@@ -107,15 +93,13 @@
         password: '',
         name: '',
         academy: '',
-        major: '',
-        grade: '',
-        degree: '',
+        lab: '',
     })
     // 校验规则
     const addFormRules = reactive({
-        // 学号
+        // 学工号
         number: [
-            { required: true, message: '请输入学号' },
+            { required: true, message: '请输入学工号', trigger: blur },
             {
                 validator: (rule, value, callback) => {
                     if (typeof value !== 'number') {
@@ -132,10 +116,8 @@
             { min: 6, message: '密码至少为6位', trigger: 'blur' },
         ],
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        major: [{ required: true, message: '请选择专业', trigger: 'blur' }],
-        grade: [{ required: true, message: '请选择年级', trigger: 'blur' }],
+        lab: [{ required: true, message: '请选择所属实验室', trigger: 'blur' }],
     })
-
     // 检测学工号长度
     watch(
         () => addForm.number,
@@ -162,31 +144,23 @@
     const props = {
         expandTrigger: 'hover',
     }
-    // 专业分类
-    const majors = [
+    // 实验室
+    const labs = [
         {
             value: '计算机科学学院',
             label: '计算机科学学院',
             children: [
                 {
-                    value: '软件工程',
-                    label: '软件工程',
+                    value: '计科院_实验室A',
+                    label: '计科院_实验室A',
                 },
                 {
-                    value: '网络空间安全',
-                    label: '网络空间安全',
+                    value: '计科院_实验室B',
+                    label: '计科院_实验室B',
                 },
                 {
-                    value: '计算机科学与技术',
-                    label: '计算机科学与技术',
-                },
-                {
-                    value: '物联网工程',
-                    label: '物联网工程',
-                },
-                {
-                    value: '数据科学与大数据技术',
-                    label: '数据科学与大数据技术',
+                    value: '计科院_实验室C',
+                    label: '计科院_实验室C',
                 },
             ],
         },
@@ -195,83 +169,25 @@
             label: '石油与天然气工程学院',
             children: [
                 {
-                    value: '石油工程',
-                    label: '石油工程',
+                    value: '石工院_实验室A',
+                    label: '石工院_实验室A',
                 },
                 {
-                    value: '油气储运工程',
-                    label: '油气储运工程',
+                    value: '石工院_实验室B',
+                    label: '石工院_实验室B',
                 },
                 {
-                    value: '海洋油气工程',
-                    label: '海洋油气工程',
-                },
-                {
-                    value: '化学工程与工艺',
-                    label: '化学工程与工艺',
-                },
-                {
-                    value: '新能源科学与工程',
-                    label: '新能源科学与工程',
-                },
-            ],
-        },
-    ]
-    const now = new Date()
-    const year = now.getFullYear()
-    // 年级分类
-    const grades = [
-        {
-            value: '本科生',
-            label: '本科生',
-            children: [
-                {
-                    value: `本${year - 4}级`,
-                    label: `本${year - 4}级`,
-                },
-                {
-                    value: `本${year - 3}级`,
-                    label: `本${year - 3}级`,
-                },
-                {
-                    value: `本${year - 2}级`,
-                    label: `本${year - 2}级`,
-                },
-                {
-                    value: `本${year - 1}级`,
-                    label: `本${year - 1}级`,
-                },
-            ],
-        },
-        {
-            value: '研究生',
-            label: '研究生',
-            children: [
-                {
-                    value: `研${year - 3}级`,
-                    label: `研${year - 3}级`,
-                },
-                {
-                    value: `研${year - 2}级`,
-                    label: `研${year - 2}级`,
-                },
-                {
-                    value: `研${year - 1}级`,
-                    label: `研${year - 1}级`,
+                    value: '石工院_实验室C',
+                    label: '石工院_实验室C',
                 },
             ],
         },
     ]
     //#endregion
-    const majorChange = value => {
+    const labChange = value => {
         // console.log(value)
         addForm.academy = value[0]
-        addForm.major = value[1]
-    }
-    const gradeChange = value => {
-        // console.log(value)
-        addForm.degree = value[0]
-        addForm.grade = value[1]
+        addForm.lab = value[1]
     }
 
     const editConfirm = () => {
@@ -280,16 +196,17 @@
             if (isValid) {
                 // console.log(addForm)
                 try {
-                    const res = await axios.post('/admin/student/add', addForm)
+                    const res = await axios.post('/admin/teacher/add', addForm)
                     // console.log(res)
                     if (res.status === 201) {
-                        emit('getStudents')
+                        emit('getTeachers')
                         closeDialog()
                         // 通知
                         ElMessage.success(res.data.message)
                     }
                 } catch (error) {
                     ElMessage.error(error.response.data.error)
+                    emit('getTeachers')
                 }
             }
         })
@@ -308,6 +225,6 @@
         max-width: 190px;
     }
     :deep(.el-form-item__label) {
-        width: 51px;
+        width: 70px;
     }
 </style>

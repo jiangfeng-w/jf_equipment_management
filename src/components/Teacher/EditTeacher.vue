@@ -2,7 +2,7 @@
     <el-dialog
         title="修改学生信息"
         width="45%"
-        @open="getStudentInfo()"
+        @open="getTeacherInfo()"
         @closed="closeDialog()"
     >
         <el-form
@@ -10,17 +10,16 @@
             :model="editForm"
             ref="editFormRef"
             :rules="editFormRules"
-            label-position="right"
         >
-            <!-- 学号 -->
+            <!-- 学工号 -->
             <el-form-item
-                label="学号"
+                label="学工号"
                 prop="number"
                 type="number"
             >
                 <el-input
                     v-model.number="editForm.number"
-                    placeholder="请输入学号"
+                    placeholder="请输入学工号"
                 />
             </el-form-item>
             <!-- 密码 -->
@@ -30,7 +29,7 @@
             >
                 <el-input
                     v-model="editForm.password"
-                    placeholder="请输入修改的密码"
+                    placeholder="密码默认为学工号后六位"
                     type="password"
                     show-password
                 />
@@ -45,31 +44,18 @@
                     placeholder="请输入姓名"
                 />
             </el-form-item>
-            <!-- 年级 -->
+            <!-- 所属实验室 -->
             <el-form-item
-                label="年级"
-                prop="grade"
+                label="实验室"
+                prop="lab"
             >
                 <el-cascader
-                    v-model="editForm.grade"
-                    :options="grades"
+                    v-model="editForm.lab"
+                    :options="labs"
                     :props="options"
-                    placeholder="请选择年级"
-                    @change="gradeChange"
-                />
-            </el-form-item>
-            <!-- 专业 -->
-            <el-form-item
-                label="专业"
-                prop="major"
-            >
-                <el-cascader
-                    v-model="editForm.major"
-                    :options="majors"
-                    :props="options"
-                    placeholder="请选择专业"
+                    placeholder="请选择实验室"
                     :show-all-levels="false"
-                    @change="majorChange"
+                    @change="labChange"
                 />
             </el-form-item>
         </el-form>
@@ -89,15 +75,20 @@
 </template>
 
 <script setup>
-    import { ref, reactive, watch, toRaw, toRefs } from 'vue'
+    import { ref, reactive, watch, toRaw } from 'vue'
     import axios from 'axios'
 
     const props = defineProps({
         editID: String,
     })
+
+    // 表单
+    const editFormRef = ref()
+    const editForm = reactive({})
+    let initEditForm
     // 获取学生信息
-    const getStudentInfo = async () => {
-        const res = await axios.get(`/admin/student/list/${props.editID}`)
+    const getTeacherInfo = async () => {
+        const res = await axios.get(`/admin/teacher/list/${props.editID}`)
         if (res.status === 200) {
             Object.assign(editForm, res.data.data)
             editForm.number = Number(editForm.number)
@@ -112,15 +103,11 @@
     // 注册emit
     const emit = defineEmits(['closeEditDialog', 'getTableList'])
 
-    // 表单
-    const editFormRef = ref()
-    let editForm = reactive({})
-    let initEditForm
     // 校验规则
     const editFormRules = reactive({
-        // 学号
+        // 学工号
         number: [
-            { required: true, message: '请输入学号' },
+            { required: true, message: '请输入学工号', trigger: blur },
             {
                 validator: (rule, value, callback) => {
                     if (typeof value !== 'number') {
@@ -134,10 +121,9 @@
         ],
         password: [{ min: 6, message: '密码至少为6位', trigger: 'blur' }],
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        major: [{ required: true, message: '请选择专业', trigger: 'blur' }],
-        grade: [{ required: true, message: '请选择年级', trigger: 'blur' }],
+        lab: [{ required: true, message: '请选择所属实验室', trigger: 'blur' }],
     })
-    // 检测学号长度
+    // 检测学工号长度
     watch(
         () => editForm.number,
         (newValue, oldValue) => {
@@ -147,35 +133,27 @@
         }
     )
 
+    //#region 两个级联选择器
     const options = {
         expandTrigger: 'hover',
     }
-    //#region 两个级联选择器
-    // 专业分类
-    const majors = [
+    // 实验室
+    const labs = [
         {
             value: '计算机科学学院',
             label: '计算机科学学院',
             children: [
                 {
-                    value: '软件工程',
-                    label: '软件工程',
+                    value: '计科院_实验室A',
+                    label: '计科院_实验室A',
                 },
                 {
-                    value: '网络空间安全',
-                    label: '网络空间安全',
+                    value: '计科院_实验室B',
+                    label: '计科院_实验室B',
                 },
                 {
-                    value: '计算机科学与技术',
-                    label: '计算机科学与技术',
-                },
-                {
-                    value: '物联网工程',
-                    label: '物联网工程',
-                },
-                {
-                    value: '数据科学与大数据技术',
-                    label: '数据科学与大数据技术',
+                    value: '计科院_实验室C',
+                    label: '计科院_实验室C',
                 },
             ],
         },
@@ -184,83 +162,25 @@
             label: '石油与天然气工程学院',
             children: [
                 {
-                    value: '石油工程',
-                    label: '石油工程',
+                    value: '石工院_实验室A',
+                    label: '石工院_实验室A',
                 },
                 {
-                    value: '油气储运工程',
-                    label: '油气储运工程',
+                    value: '石工院_实验室B',
+                    label: '石工院_实验室B',
                 },
                 {
-                    value: '海洋油气工程',
-                    label: '海洋油气工程',
-                },
-                {
-                    value: '化学工程与工艺',
-                    label: '化学工程与工艺',
-                },
-                {
-                    value: '新能源科学与工程',
-                    label: '新能源科学与工程',
-                },
-            ],
-        },
-    ]
-    const now = new Date()
-    const year = now.getFullYear()
-    // 年级分类
-    const grades = [
-        {
-            value: '本科生',
-            label: '本科生',
-            children: [
-                {
-                    value: `本${year - 4}级`,
-                    label: `本${year - 4}级`,
-                },
-                {
-                    value: `本${year - 3}级`,
-                    label: `本${year - 3}级`,
-                },
-                {
-                    value: `本${year - 2}级`,
-                    label: `本${year - 2}级`,
-                },
-                {
-                    value: `本${year - 1}级`,
-                    label: `本${year - 1}级`,
-                },
-            ],
-        },
-        {
-            value: '研究生',
-            label: '研究生',
-            children: [
-                {
-                    value: `研${year - 3}级`,
-                    label: `研${year - 3}级`,
-                },
-                {
-                    value: `研${year - 2}级`,
-                    label: `研${year - 2}级`,
-                },
-                {
-                    value: `研${year - 1}级`,
-                    label: `研${year - 1}级`,
+                    value: '石工院_实验室C',
+                    label: '石工院_实验室C',
                 },
             ],
         },
     ]
     //#endregion
-    const majorChange = value => {
+    const labChange = value => {
         // console.log(value)
         editForm.academy = value[0]
-        editForm.major = value[1]
-    }
-    const gradeChange = value => {
-        // console.log(value)
-        editForm.degree = value[0]
-        editForm.grade = value[1]
+        editForm.lab = value[1]
     }
 
     const editConfirm = () => {
@@ -271,7 +191,7 @@
                 if (isValid) {
                     // console.log(editForm)
                     try {
-                        const res = await axios.post('/admin/student/changeInfo', editForm)
+                        const res = await axios.post('/admin/teacher/changeInfo', editForm)
 
                         if (res.status === 200) {
                             ElMessage.success(res.data.message)
@@ -302,6 +222,6 @@
         max-width: 190px;
     }
     :deep(.el-form-item__label) {
-        width: 51px;
+        width: 70px;
     }
 </style>
