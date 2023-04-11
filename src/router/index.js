@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import axios from 'axios'
 
 const routes = [
     {
@@ -70,7 +71,7 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // 跳转到登录
     if (to.path === '/login') {
         next()
@@ -79,7 +80,16 @@ router.beforeEach((to, from, next) => {
             // 没有token，跳转到登录
             next('/login')
         } else {
-            next()
+            // 检查token是否过期
+            const token = localStorage.getItem('token')
+            try {
+                const res = await axios.get('/admin/checkToken')
+                if (res.status === 200) {
+                    next()
+                }
+            } catch (error) {
+                next('/login')
+            }
         }
     }
 })
