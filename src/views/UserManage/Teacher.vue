@@ -26,6 +26,7 @@
 
     <!-- 表格 -->
     <el-table
+        ref="tableRef"
         :data="tableList"
         style="width: 100%"
         table-layout="auto"
@@ -177,9 +178,11 @@
             delDisabled.value = true
         }
     }
+
+    // 表格的ref
+    const tableRef = ref()
     // 控制删除按钮是否禁用
     const delDisabled = ref(true)
-
     // 批量删除老师
     const deleteTeachers = async () => {
         loseFocus()
@@ -203,7 +206,9 @@
                 ElMessage.error(error.response.data.error)
                 getTableList()
             }
-        } catch (error) {}
+        } catch (error) {
+            tableRef.value.clearSelection()
+        }
     }
     // 删除单个学生
     const deleteConfirm = async data => {
