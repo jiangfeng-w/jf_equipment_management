@@ -1,8 +1,8 @@
 <template>
     <el-dialog
-        title="修改教师信息"
+        title="修改设备管理员信息"
         width="45%"
-        @open="getTeacherInfo()"
+        @open="getAdminInfo()"
         @closed="closeDialog()"
     >
         <el-form
@@ -16,7 +16,6 @@
             <el-form-item
                 label="学工号"
                 prop="number"
-                type="number"
             >
                 <el-input
                     v-model.number="editForm.number"
@@ -43,20 +42,6 @@
                 <el-input
                     v-model="editForm.name"
                     placeholder="请输入姓名"
-                />
-            </el-form-item>
-            <!-- 所属实验室 -->
-            <el-form-item
-                label="实验室"
-                prop="lab"
-            >
-                <el-cascader
-                    v-model="editForm.lab"
-                    :options="labs"
-                    :props="options"
-                    placeholder="请选择实验室"
-                    :show-all-levels="false"
-                    @change="labChange"
                 />
             </el-form-item>
             <!-- 电话号码 -->
@@ -107,9 +92,9 @@
     const editFormRef = ref()
     const editForm = reactive({})
     let initEditForm
-    // 获取学生信息
-    const getTeacherInfo = async () => {
-        const res = await axios.get(`/admin/teacher/list/${props.editID}`)
+    // 获取管理员信息
+    const getAdminInfo = async () => {
+        const res = await axios.get(`/admin/Admin/list/${props.editID}`)
         if (res.status === 200) {
             Object.assign(editForm, res.data.data)
             editForm.number = Number(editForm.number)
@@ -168,7 +153,6 @@
         ],
         password: [{ min: 6, message: '密码至少为6位', trigger: 'blur' }],
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        lab: [{ required: true, message: '请选择所属实验室', trigger: 'blur' }],
     })
     // 检测学工号长度
     watch(
@@ -189,65 +173,15 @@
         }
     )
 
-    //#region 两个级联选择器
-    const options = {
-        expandTrigger: 'hover',
-    }
-    // 实验室
-    const labs = [
-        {
-            value: '计算机科学学院',
-            label: '计算机科学学院',
-            children: [
-                {
-                    value: '计科院_实验室A',
-                    label: '计科院_实验室A',
-                },
-                {
-                    value: '计科院_实验室B',
-                    label: '计科院_实验室B',
-                },
-                {
-                    value: '计科院_实验室C',
-                    label: '计科院_实验室C',
-                },
-            ],
-        },
-        {
-            value: '石油与天然气工程学院',
-            label: '石油与天然气工程学院',
-            children: [
-                {
-                    value: '石工院_实验室A',
-                    label: '石工院_实验室A',
-                },
-                {
-                    value: '石工院_实验室B',
-                    label: '石工院_实验室B',
-                },
-                {
-                    value: '石工院_实验室C',
-                    label: '石工院_实验室C',
-                },
-            ],
-        },
-    ]
-    //#endregion
-    const labChange = value => {
-        // console.log(value)
-        editForm.academy = value[0]
-        editForm.lab = value[1]
-    }
-
     const editConfirm = () => {
         editFormRef.value.validate(async isValid => {
             // 表单数据改变了
             if (!(JSON.stringify(initEditForm) === JSON.stringify(editForm))) {
                 // 验证通过
                 if (isValid) {
-                    // console.log(editForm)
+                    console.log(editForm)
                     try {
-                        const res = await axios.post('/admin/teacher/changeInfo', editForm)
+                        const res = await axios.post('/admin/admin/changeInfo', editForm)
 
                         if (res.status === 200) {
                             ElMessage.success(res.data.message)

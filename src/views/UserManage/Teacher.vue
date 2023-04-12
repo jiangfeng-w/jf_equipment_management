@@ -8,7 +8,7 @@
                 plain
                 @click="showAddDialog()"
             >
-                增加
+                新增
             </el-button>
         </el-col>
         <el-col>
@@ -65,7 +65,7 @@
             <template #default="scope">
                 <!-- 编辑按钮 -->
                 <el-button
-                    type="success"
+                    type="primary"
                     size="small"
                     link
                     :icon="Edit"
@@ -78,12 +78,12 @@
                     width="220"
                     confirm-button-text="确认"
                     cancel-button-text="取消"
-                    title="确认删除此学生?"
+                    title="确认删除此老师?"
                     @confirm="deleteConfirm(scope.row)"
                 >
                     <template #reference>
                         <el-button
-                            type="danger"
+                            type="primary"
                             size="small"
                             link
                             :icon="Delete"
@@ -101,7 +101,7 @@
     <AddTeacher
         v-model="addDalogVisible"
         @closeAddDialog="closeAddDialog()"
-        @getTeachers="getTableList()"
+        @getTableList="getTableList()"
     />
     <!-- 编辑老师信息对话框 -->
     <EditTeacher
@@ -195,12 +195,12 @@
                 type: 'warning',
             })
             try {
-                const res = await axios.post('/admin/teacher/delete', { ids })
+                const res = await axios.post('/admin/user/delete', { ids })
                 if (res.status === 200) {
                     getTableList()
                 }
             } catch (error) {
-                // ElMessage.error(error.response.data.error)
+                ElMessage.error(error.response.data.error)
                 getTableList()
             }
         } catch (error) {}
@@ -210,13 +210,13 @@
         const ids = [data.id]
         // console.log(ids)
         try {
-            const res = await axios.post('/admin/teacher/delete', { ids })
+            const res = await axios.post('/admin/user/delete', { ids })
             if (res.status === 200) {
                 getTableList()
             }
         } catch (error) {
             console.log(error.response)
-            // ElMessage.error(error.response.data.error)
+            ElMessage.error(error.response.data.error)
             getTableList()
         }
     }

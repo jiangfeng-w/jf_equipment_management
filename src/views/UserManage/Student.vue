@@ -8,7 +8,7 @@
                 plain
                 @click="showAddDialog()"
             >
-                增加
+                新增
             </el-button>
         </el-col>
         <el-col>
@@ -74,7 +74,7 @@
             <template #default="scope">
                 <!-- 编辑按钮 -->
                 <el-button
-                    type="success"
+                    type="primary"
                     size="small"
                     link
                     :icon="Edit"
@@ -92,7 +92,7 @@
                 >
                     <template #reference>
                         <el-button
-                            type="danger"
+                            type="primary"
                             size="small"
                             link
                             :icon="Delete"
@@ -208,12 +208,12 @@
                 type: 'warning',
             })
             try {
-                const res = await axios.post('/admin/student/delete', { ids })
+                const res = await axios.post('/admin/user/delete', { ids })
                 if (res.status === 200) {
                     getTableList()
                 }
             } catch (error) {
-                // ElMessage.error(error.response.data.error)
+                ElMessage.error(error.response.data.error)
                 getTableList()
             }
         } catch (error) {}
@@ -223,13 +223,13 @@
         const ids = [data.id]
         // console.log(ids)
         try {
-            const res = await axios.post('/admin/student/delete', { ids })
+            const res = await axios.post('/admin/user/delete', { ids })
             if (res.status === 200) {
                 getTableList()
             }
         } catch (error) {
             console.log(error.response)
-            // ElMessage.error(error.response.data.error)
+            ElMessage.error(error.response.data.error)
             getTableList()
         }
     }

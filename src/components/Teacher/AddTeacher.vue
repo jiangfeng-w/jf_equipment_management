@@ -97,12 +97,8 @@
     import { ref, reactive, watch } from 'vue'
     import axios from 'axios'
 
-    // const props=defineProps({
-    //     visible:Boolean
-    // })
-
     // 注册emit
-    const emit = defineEmits(['closeAddDialog', 'getTeachers'])
+    const emit = defineEmits(['closeAddDialog', 'getTableList'])
 
     // 表单
 
@@ -255,14 +251,14 @@
                     const res = await axios.post('/admin/teacher/add', addForm)
                     // console.log(res)
                     if (res.status === 201) {
-                        emit('getTeachers')
+                        emit('getTableList')
                         closeDialog()
                         // 通知
                         ElMessage.success(res.data.message)
                     }
                 } catch (error) {
                     ElMessage.error(error.response.data.error)
-                    emit('getTeachers')
+                    emit('getTableList')
                 }
             }
         })
