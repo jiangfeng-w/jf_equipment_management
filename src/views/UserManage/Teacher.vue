@@ -41,6 +41,14 @@
             label="姓名"
         ></el-table-column>
         <el-table-column
+            prop="phone_number"
+            label="手机号"
+        ></el-table-column>
+        <el-table-column
+            prop="email"
+            label="邮箱"
+        ></el-table-column>
+        <el-table-column
             prop="academy"
             label="学院"
             wi

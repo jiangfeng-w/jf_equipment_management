@@ -15,7 +15,6 @@
             <el-form-item
                 label="学工号"
                 prop="number"
-                type="number"
             >
                 <el-input
                     v-model.number="addForm.number"
@@ -58,13 +57,33 @@
                     @change="labChange"
                 />
             </el-form-item>
+            <!-- 电话号码 -->
+            <el-form-item
+                label="手机号"
+                prop="phone_number"
+            >
+                <el-input
+                    v-model="addForm.phone_number"
+                    placeholder="请输入手机号"
+                />
+            </el-form-item>
+            <!-- 邮箱 -->
+            <el-form-item
+                label="邮箱"
+                prop="email"
+            >
+                <el-input
+                    v-model="addForm.email"
+                    placeholder="请输入邮箱"
+                />
+            </el-form-item>
         </el-form>
 
         <template #footer>
             <div class="dialog-footer">
                 <el-button
                     type="primary"
-                    @click="editConfirm()"
+                    @click="addConfirm()"
                 >
                     确认
                 </el-button>
@@ -92,6 +111,8 @@
         number: '',
         password: '',
         name: '',
+        phone_number: '',
+        email: '',
         academy: '',
         lab: '',
     })
@@ -111,6 +132,33 @@
                 },
             },
         ],
+        phone_number: [
+            { required: true, message: '请输入手机号' },
+            {
+                validator: (rule, value, callback) => {
+                    const reg = /^[1][3-9][0-9]{9}$/
+                    if (!reg.test(value)) {
+                        callback(new Error('请输入正确的手机号'))
+                    }
+                    callback()
+                },
+                trigger: 'blur',
+            },
+        ],
+        email: [
+            { required: true, message: '请输入邮箱地址' },
+            {
+                validator: (rule, value, callback) => {
+                    const emailRegex = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+                    if (!emailRegex.test(value)) {
+                        callback(new Error('请输入正确的邮箱地址'))
+                    }
+                    callback()
+                },
+                trigger: 'blur',
+            },
+        ],
+
         password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
             { min: 6, message: '密码至少为6位', trigger: 'blur' },
@@ -127,7 +175,15 @@
             }
         }
     )
-
+    // 手机号长度
+    watch(
+        () => addForm.phone_number,
+        (newValue, oldValue) => {
+            if (addForm.phone_number.toString().length >= 12) {
+                addForm.phone_number = oldValue
+            }
+        }
+    )
     // 检测学号变化自动输入密码
     watch(
         () => addForm.number,
@@ -190,7 +246,7 @@
         addForm.lab = value[1]
     }
 
-    const editConfirm = () => {
+    const addConfirm = () => {
         addFormRef.value.validate(async isValid => {
             // 验证通过
             if (isValid) {

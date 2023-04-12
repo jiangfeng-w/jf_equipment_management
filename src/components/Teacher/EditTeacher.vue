@@ -1,11 +1,12 @@
 <template>
     <el-dialog
-        title="修改学生信息"
+        title="修改教师信息"
         width="45%"
         @open="getTeacherInfo()"
         @closed="closeDialog()"
     >
         <el-form
+            v-if="editForm"
             :inline="true"
             :model="editForm"
             ref="editFormRef"
@@ -29,7 +30,7 @@
             >
                 <el-input
                     v-model="editForm.password"
-                    placeholder="密码默认为学工号后六位"
+                    placeholder="请输入重置后的密码"
                     type="password"
                     show-password
                 />
@@ -56,6 +57,26 @@
                     placeholder="请选择实验室"
                     :show-all-levels="false"
                     @change="labChange"
+                />
+            </el-form-item>
+            <!-- 电话号码 -->
+            <el-form-item
+                label="手机号"
+                prop="phone_number"
+            >
+                <el-input
+                    v-model="editForm.phone_number"
+                    placeholder="请输入手机号"
+                />
+            </el-form-item>
+            <!-- 邮箱 -->
+            <el-form-item
+                label="邮箱"
+                prop="email"
+            >
+                <el-input
+                    v-model="editForm.email"
+                    placeholder="请输入邮箱"
                 />
             </el-form-item>
         </el-form>
@@ -117,6 +138,32 @@
                     }
                     callback()
                 },
+            },
+        ],
+        phone_number: [
+            { required: true, message: '请输入手机号' },
+            {
+                validator: (rule, value, callback) => {
+                    const reg = /^[1][3-9][0-9]{9}$/
+                    if (!reg.test(value)) {
+                        callback(new Error('请输入正确的手机号'))
+                    }
+                    callback()
+                },
+                trigger: 'blur',
+            },
+        ],
+        email: [
+            { required: true, message: '请输入邮箱地址' },
+            {
+                validator: (rule, value, callback) => {
+                    const emailRegex = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+                    if (!emailRegex.test(value)) {
+                        callback(new Error('请输入正确的邮箱地址'))
+                    }
+                    callback()
+                },
+                trigger: 'blur',
             },
         ],
         password: [{ min: 6, message: '密码至少为6位', trigger: 'blur' }],
