@@ -1,6 +1,11 @@
 <template>
     <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item
+            class="first"
+            :to="{ path: '/' }"
+        >
+            首页
+        </el-breadcrumb-item>
         <el-breadcrumb-item
             v-for="(crumb, index) in crumbs"
             :key="index"
@@ -18,3 +23,12 @@
         return store.state.BreadCrumb
     })
 </script>
+
+<style lang="scss" scoped>
+    :deep(.first .el-breadcrumb__inner) {
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        transition: var(--el-transition-color) !important;
+        color: var(--el-text-color-primary) !important;
+    }
+</style>
