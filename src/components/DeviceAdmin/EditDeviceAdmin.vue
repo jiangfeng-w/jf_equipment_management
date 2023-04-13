@@ -94,7 +94,7 @@
     let initEditForm
     // 获取管理员信息
     const getAdminInfo = async () => {
-        const res = await axios.get(`/admin/Admin/list/${props.editID}`)
+        const res = await axios.get(`/admin/admin/list/${props.editID}`)
         if (res.status === 200) {
             Object.assign(editForm, res.data.data)
             editForm.number = Number(editForm.number)
@@ -179,7 +179,7 @@
             if (!(JSON.stringify(initEditForm) === JSON.stringify(editForm))) {
                 // 验证通过
                 if (isValid) {
-                    console.log(editForm)
+                    // console.log(editForm)
                     try {
                         const res = await axios.post('/admin/admin/changeInfo', editForm)
 
@@ -190,7 +190,8 @@
                         }
                     } catch (error) {
                         ElMessage.error(error.response.data.error)
-                        getTableData()
+                        closeDialog()
+                        emit('getTableList')
                     }
                 }
             } else {

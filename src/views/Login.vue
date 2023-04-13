@@ -30,6 +30,13 @@
                         @keyup.enter="submitForm()"
                     />
                 </el-form-item>
+                <!-- 选择角色 -->
+                <el-form-item prop="role">
+                    <el-radio-group v-model="loginForm.role">
+                        <el-radio :label="1">系统管理员</el-radio>
+                        <el-radio :label="2">设备管理员</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <!-- 按钮 -->
                 <el-form-item class="submit">
                     <el-button
@@ -50,12 +57,13 @@
     import { User, Lock } from '@element-plus/icons-vue'
     import axios from 'axios'
     import { useStore } from 'vuex'
-    // import loseFocus from '@/util/loseFocus.js'
+    import loseFocus from '@/util/loseFocus.js'
 
     //登录表单
     const loginForm = reactive({
         number: '201931061460',
-        password: 'admin1',
+        password: '061460',
+        role: null,
     })
     // 表单绑定的响应式对象
     const loginFormRef = ref()
@@ -63,20 +71,21 @@
     const loginRules = reactive({
         number: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        role: [{ required: true, message: '请选择角色', trigger: 'blur' }],
     })
 
     const router = useRouter()
     const store = useStore()
     // 提交表单
     const submitForm = () => {
-        // loseFocus()
+        loseFocus()
         // 表单校验
         loginFormRef.value.validate(async isValid => {
             if (isValid) {
                 // console.log(loginForm)
                 try {
                     const res = await axios.post('/admin/user/login', loginForm)
-                    // console.log(res)
+                    // console.log(res.data)
                     if (res.status === 200) {
                         router.push('/home')
                         // 存储用户信息

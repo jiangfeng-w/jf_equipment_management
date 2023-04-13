@@ -256,7 +256,8 @@
                         }
                     } catch (error) {
                         ElMessage.error(error.response.data.error)
-                        getTableData()
+                        closeDialog()
+                        emit('getTableList')
                     }
                 }
             } else {

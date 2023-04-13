@@ -25,7 +25,6 @@
 
 <script setup>
     import { Plus } from '@element-plus/icons-vue'
-    import { defineEmits, defineProps } from 'vue'
 
     // 接收porps
     const props = defineProps({

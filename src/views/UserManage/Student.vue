@@ -42,6 +42,14 @@
             label="姓名"
         ></el-table-column>
         <el-table-column
+            prop="phone_number"
+            label="手机号"
+        ></el-table-column>
+        <el-table-column
+            prop="email"
+            label="邮箱"
+        ></el-table-column>
+        <el-table-column
             prop="academy"
             label="学院"
             wi
@@ -49,10 +57,6 @@
         <el-table-column
             prop="major"
             label="专业"
-        ></el-table-column>
-        <el-table-column
-            prop="degree"
-            label="学历"
         ></el-table-column>
         <el-table-column
             prop="grade"
@@ -111,7 +115,7 @@
     <AddStudent
         v-model="addDalogVisible"
         @closeAddDialog="closeAddDialog()"
-        @getStudents="getTableList()"
+        @getTableList="getTableList()"
     />
     <!-- 编辑学生对话框 -->
     <EditStudent
@@ -212,7 +216,7 @@
                 type: 'warning',
             })
             try {
-                const res = await axios.post('/admin/user/delete', { ids })
+                const res = await axios.post('/admin/student/delete', { ids })
                 if (res.status === 200) {
                     getTableList()
                 }
@@ -229,12 +233,11 @@
         const ids = [data.id]
         // console.log(ids)
         try {
-            const res = await axios.post('/admin/user/delete', { ids })
+            const res = await axios.post('/admin/student/delete', { ids })
             if (res.status === 200) {
                 getTableList()
             }
         } catch (error) {
-            console.log(error.response)
             ElMessage.error(error.response.data.error)
             getTableList()
         }

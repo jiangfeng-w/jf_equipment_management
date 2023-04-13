@@ -123,68 +123,70 @@
                         label="修改密码"
                         name="changePassword"
                     >
-                        <!-- <el-form
-                                ref="userPasswordRef"
-                                :model="userPassword"
-                                :rules="userPasswordFules"
-                                label-width="120px"
-                                class="demo-ruleForm"
-                                status-icon
+                        <el-form
+                            ref="userPasswordRef"
+                            :model="userPassword"
+                            :rules="userPasswordFules"
+                            label-width="120px"
+                            class="demo-ruleForm"
+                        >
+                            <!-- 旧密码 -->
+                            <el-form-item
+                                label="旧密码"
+                                prop="oldPassword"
                             >
-                                <!== 旧密码 ==>
-                                <el-form-item
-                                    label="旧密码"
-                                    prop="oldPassword"
-                                >
-                                    <el-input
-                                        v-model="userPassword.oldPassword"
-                                        type="password"
-                                    />
-                                </el-form-item>
-                                <!== 新密码 ==>
-                                <el-form-item
-                                    label="新密码"
-                                    prop="newPassword"
-                                >
-                                    <el-input
-                                        v-model="userPassword.newPassword"
-                                        type="password"
-                                    />
-                                </el-form-item>
-                                <!== 确认密码 ==>
-                                <el-form-item
-                                    label="确认密码"
-                                    prop="checkPass"
-                                >
-                                    <el-input
-                                        v-model="userPassword.checkPass"
-                                        type="password"
-                                    />
-                                </el-form-item>
+                                <el-input
+                                    v-model="userPassword.oldPassword"
+                                    type="password"
+                                    show-password
+                                />
+                            </el-form-item>
+                            <!-- 新密码 -->
+                            <el-form-item
+                                label="新密码"
+                                prop="newPassword"
+                            >
+                                <el-input
+                                    v-model="userPassword.newPassword"
+                                    type="password"
+                                    show-password
+                                />
+                            </el-form-item>
+                            <!-- 确认密码 -->
+                            <el-form-item
+                                label="确认密码"
+                                prop="checkPass"
+                            >
+                                <el-input
+                                    v-model="userPassword.checkPass"
+                                    type="password"
+                                    show-password
+                                />
+                            </el-form-item>
 
-                                <div class="button">
-                                    <!== 提交按钮 ==>
-                                    <el-form-item class="submit">
-                                        <el-button
-                                            type="primary"
-                                            @click="submitPass()"
-                                            size="large"
-                                        >
-                                            保存
-                                        </el-button>
-                                    </el-form-item>
-                                    <!== 提交按钮 ==>
-                                    <el-form-item class="submit">
-                                        <el-button
-                                            type="info"
-                                            @click="resetPass()"
-                                            size="large"
-                                        >
-                                            重置
-                                        </el-button>
-                                    </el-form-item>
-                                </div>
-                            </el-form> -->
+                            <div class="button">
+                                <!-- 提交按钮 -->
+                                <el-form-item class="submit">
+                                    <el-button
+                                        type="primary"
+                                        @click="submitPass()"
+                                        size="large"
+                                    >
+                                        保存
+                                    </el-button>
+                                </el-form-item>
+                                <!-- 提交按钮 -->
+                                <el-form-item class="submit">
+                                    <el-button
+                                        type="info"
+                                        @click="resetPass()"
+                                        size="large"
+                                    >
+                                        重置
+                                    </el-button>
+                                </el-form-item>
+                            </div>
+                        </el-form>
                     </el-tab-pane>
                 </el-tabs>
             </el-card>
@@ -192,7 +194,7 @@
     </el-row>
 </template>
 <script setup>
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { useStore } from 'vuex'
     import { ref, reactive, onMounted, watch, toRaw } from 'vue'
     // import { Edit, Delete, Plus } from '@element-plus/icons-vue'
@@ -209,6 +211,7 @@
     store.commit('changeBreadCrumb', zhNames)
     //#endregion
 
+    //#region 修改基本信息
     // 标签页绑定
     const activeName = ref('modifyData')
 
@@ -218,10 +221,7 @@
     let initUserForm
     // 获取用户信息
     const getUserInfo = async () => {
-        const res = await axios.get('/admin/user/info')
-        // var { number, name, phone_number, email, create_time } = res.data.data
-
-        Object.assign(tempUserInfo, res.data.data)
+        Object.assign(tempUserInfo, store.state.userInfo)
         tempUserInfo.oldAvatar = store.state.userInfo.avatar
         tempUserInfo.avatar = null
         tempUserInfo.file = null
@@ -297,23 +297,22 @@
     const submitForm = () => {
         loseFocus()
         userFormRef.value.validate(async isValid => {
-            // 表单改变了
+            // 表单是否改变
             if (!(JSON.stringify(initUserForm) === JSON.stringify(tempUserInfo))) {
                 // console.log(tempUserInfo)
                 // 验证通过
                 if (isValid) {
                     try {
-                        const res = await uploadFile('/admin/user/changeOwnInfo', tempUserInfo)
-                        // console.log(res)
+                        const res = await uploadFile('/admin/changeOwnInfo', tempUserInfo)
+                        // console.log(res.data)
                         if (res.status === 200) {
+                            // 通知
+                            ElMessage.success(res.data.message)
                             store.commit('changeUserInfo', res.data.data)
-
                             // 重新给表单赋值
                             tempUserInfo.avatar = null
                             tempUserInfo.oldAvatar = store.state.userInfo.avatar
                             initUserForm = JSON.parse(JSON.stringify(toRaw(tempUserInfo)))
-                            // 通知
-                            ElMessage.success(res.data.message)
                         }
                     } catch (error) {
                         ElMessage.error(error.response.data.error)
@@ -324,6 +323,94 @@
             }
         })
     }
+    //#endregion
+
+    //#region 修改密码
+    // 修改密码的表单
+    const userPasswordRef = ref()
+    const userPassword = reactive({
+        oldPassword: '',
+        newPassword: '',
+        checkPass: '',
+    })
+    // 密码修改校验规则
+    const userPasswordFules = reactive({
+        oldPassword: [
+            {
+                validator: (rule, value, callback) => {
+                    const reg = /^.{6,16}$/
+                    if (!reg.test(value)) {
+                        callback(new Error('密码长度在6到16位之间'))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur',
+            },
+        ],
+        newPassword: [
+            {
+                validator: (rule, value, callback) => {
+                    const reg = /^.{6,16}$/
+                    if (!reg.test(value)) {
+                        callback(new Error('密码长度在6到16位之间'))
+                    } else if (userPassword.checkPass !== '') {
+                        if (!userPasswordRef.value) return
+                        userPasswordRef.value.validateField('checkPass', () => null)
+                    }
+                    callback()
+                },
+                trigger: 'blur',
+            },
+        ],
+        checkPass: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value !== userPassword.newPassword) {
+                        callback(new Error('两次密码输入不一致'))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur',
+            },
+        ],
+    })
+
+    // 生成router实例
+    const router = useRouter()
+    // 提交修改密码
+    const submitPass = () => {
+        loseFocus()
+        userPasswordRef.value.validate(async isValid => {
+            if (isValid) {
+                if (userPassword.oldPassword === userPassword.newPassword) {
+                    return ElMessage.info('新密码不能和原密码相同')
+                }
+                try {
+                    const res = await axios.post('/admin/changePass', userPassword)
+                    if (res.status === 200) {
+                        ElMessage.success(`${res.data.message}，请重新登录`)
+                        router.push('/login')
+                    }
+                } catch (err) {
+                    ElMessage.error(err.response.data.message)
+                }
+            } else {
+                ElMessage.info('请正确填写后提交')
+            }
+        })
+    }
+    const resetPass = () => {
+        if (event.bubbles) {
+            loseFocus()
+        }
+        for (const i in userPassword) {
+            userPassword[i] = ''
+        }
+        userPasswordRef.value.clearValidate()
+    }
+    //#endregion
 </script>
 <style lang="scss" scoped>
     .userInfo {

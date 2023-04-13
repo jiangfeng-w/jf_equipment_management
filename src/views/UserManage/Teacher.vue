@@ -198,7 +198,7 @@
                 type: 'warning',
             })
             try {
-                const res = await axios.post('/admin/user/delete', { ids })
+                const res = await axios.post('/admin/teacher/delete', { ids })
                 if (res.status === 200) {
                     getTableList()
                 }
@@ -215,7 +215,7 @@
         const ids = [data.id]
         // console.log(ids)
         try {
-            const res = await axios.post('/admin/user/delete', { ids })
+            const res = await axios.post('/admin/teacher/delete', { ids })
             if (res.status === 200) {
                 getTableList()
             }

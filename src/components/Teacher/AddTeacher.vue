@@ -251,13 +251,14 @@
                     const res = await axios.post('/admin/teacher/add', addForm)
                     // console.log(res)
                     if (res.status === 201) {
-                        emit('getTableList')
-                        closeDialog()
                         // 通知
                         ElMessage.success(res.data.message)
+                        closeDialog()
+                        emit('getTableList')
                     }
                 } catch (error) {
                     ElMessage.error(error.response.data.error)
+                    closeDialog()
                     emit('getTableList')
                 }
             }

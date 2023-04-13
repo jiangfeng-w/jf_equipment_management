@@ -78,7 +78,7 @@
             <div class="dialog-footer">
                 <el-button
                     type="primary"
-                    @click="editConfirm()"
+                    @click="submitConfirm()"
                 >
                     确认
                 </el-button>
@@ -97,7 +97,7 @@
     // })
 
     // 注册emit
-    const emit = defineEmits(['closeAddDialog', 'getStudents'])
+    const emit = defineEmits(['closeAddDialog', 'getTableList'])
 
     // 表单
 
@@ -274,22 +274,24 @@
         addForm.grade = value[1]
     }
 
-    const editConfirm = () => {
+    const submitConfirm = () => {
         addFormRef.value.validate(async isValid => {
             // 验证通过
             if (isValid) {
                 // console.log(addForm)
                 try {
                     const res = await axios.post('/admin/student/add', addForm)
-                    // console.log(res)
+                    // console.log(res.data)
                     if (res.status === 201) {
-                        emit('getStudents')
-                        closeDialog()
                         // 通知
                         ElMessage.success(res.data.message)
+                        closeDialog()
+                        emit('getTableList')
                     }
                 } catch (error) {
                     ElMessage.error(error.response.data.error)
+                    closeDialog()
+                    emit('getTableList')
                 }
             }
         })
@@ -308,6 +310,6 @@
         max-width: 190px;
     }
     :deep(.el-form-item__label) {
-        width: 51px;
+        width: 70px;
     }
 </style>
