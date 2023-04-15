@@ -39,7 +39,7 @@ export default createStore({
     modules: {},
     plugins: [
         createPersistedState({
-            paths: ['userInfo'], //控制是否持久化
+            // paths: ['userInfo'], //控制是否持久化
         }),
     ],
 })

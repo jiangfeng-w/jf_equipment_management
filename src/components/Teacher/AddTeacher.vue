@@ -6,7 +6,6 @@
         @closed="closeDialog()"
     >
         <el-form
-            :inline="true"
             :model="addForm"
             ref="addFormRef"
             :rules="addFormRules"
@@ -53,13 +52,12 @@
                     :options="labs"
                     :props="props"
                     placeholder="请选择实验室"
-                    :show-all-levels="false"
                     @change="labChange"
                 />
             </el-form-item>
             <!-- 电话号码 -->
             <el-form-item
-                label="手机号"
+                label="手机号码"
                 prop="phone_number"
             >
                 <el-input
@@ -67,9 +65,9 @@
                     placeholder="请输入手机号"
                 />
             </el-form-item>
-            <!-- 邮箱 -->
+            <!-- 电子邮箱 -->
             <el-form-item
-                label="邮箱"
+                label="电子邮箱"
                 prop="email"
             >
                 <el-input
@@ -116,7 +114,7 @@
     const addFormRules = reactive({
         // 学工号
         number: [
-            { required: true, message: '请输入学工号', trigger: blur },
+            { required: true, message: '请输入学工号', trigger: 'blur' },
             {
                 validator: (rule, value, callback) => {
                     if (typeof value !== 'number') {
@@ -274,10 +272,22 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    :deep(.el-form-item__content) {
-        max-width: 190px;
-    }
+    // :deep(.el-form-item__content) {
+    //     max-width: 190px;
+    // }
     :deep(.el-form-item__label) {
-        width: 70px;
+        width: 80px;
+    }
+
+    :deep(.el-form-item) {
+        margin-right: 0 !important;
+    }
+    :deep(.el-form-item__content) {
+        width: 100%;
+        // padding-left: 80px;
+    }
+    :deep(.el-select),
+    :deep(.el-input_inner) {
+        width: 100%;
     }
 </style>

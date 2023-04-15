@@ -16,19 +16,19 @@
                 <ul class="list-group">
                     <li class="list-group-item">
                         <span>学工号</span>
-                        <div class="pull-right">{{ tempUserInfo.number }}</div>
+                        <div class="pull-right">{{ store.state.userInfo.number }}</div>
                     </li>
                     <li class="list-group-item">
                         <span>用户姓名</span>
-                        <div class="pull-right">{{ tempUserInfo.name }}</div>
+                        <div class="pull-right">{{ store.state.userInfo.name }}</div>
                     </li>
                     <li class="list-group-item">
                         <span>手机号码</span>
-                        <div class="pull-right">{{ tempUserInfo.phone_number }}</div>
+                        <div class="pull-right">{{ store.state.userInfo.phone_number }}</div>
                     </li>
                     <li class="list-group-item">
                         <span>用户邮箱</span>
-                        <div class="pull-right">{{ tempUserInfo.email }}</div>
+                        <div class="pull-right">{{ store.state.userInfo.email }}</div>
                     </li>
                     <li class="list-group-item">
                         <span>所属角色</span>
@@ -38,7 +38,7 @@
                     </li>
                     <li class="list-group-item">
                         <span>创建日期</span>
-                        <div class="pull-right">{{ formatTime(tempUserInfo.create_time) }}</div>
+                        <div class="pull-right">{{ formatTime(store.state.userInfo.create_time) }}</div>
                     </li>
                 </ul>
             </el-card>
@@ -67,7 +67,7 @@
                             ref="userFormRef"
                             :model="tempUserInfo"
                             :rules="userFormFules"
-                            label-width="120px"
+                            label-width="80px"
                             class="demo-ruleForm"
                         >
                             <!-- 手机号 -->
@@ -112,7 +112,7 @@
                                         @click="resetForm()"
                                         size="large"
                                     >
-                                        重置
+                                        取消
                                     </el-button>
                                 </el-form-item>
                             </div>
@@ -127,12 +127,12 @@
                             ref="userPasswordRef"
                             :model="userPassword"
                             :rules="userPasswordFules"
-                            label-width="120px"
+                            label-width="80px"
                             class="demo-ruleForm"
                         >
                             <!-- 旧密码 -->
                             <el-form-item
-                                label="旧密码"
+                                label="原密码"
                                 prop="oldPassword"
                             >
                                 <el-input
@@ -163,7 +163,13 @@
                                     show-password
                                 />
                             </el-form-item>
-
+                            <!-- 重置密码 -->
+                            <div
+                                class="forgetPassBtn"
+                                @click="showResetPass"
+                            >
+                                忘记密码?
+                            </div>
                             <div class="button">
                                 <!-- 提交按钮 -->
                                 <el-form-item class="submit">
@@ -182,11 +188,19 @@
                                         @click="resetPass()"
                                         size="large"
                                     >
-                                        重置
+                                        取消
                                     </el-button>
                                 </el-form-item>
                             </div>
                         </el-form>
+
+                        <ResetPass
+                            :number="tempUserInfo.number"
+                            :role="tempUserInfo.role"
+                            :email="tempUserInfo.email"
+                            v-model="resetPassDalogVisible"
+                            @closeDialog="closeDialog()"
+                        />
                     </el-tab-pane>
                 </el-tabs>
             </el-card>
@@ -199,6 +213,7 @@
     import { ref, reactive, onMounted, watch, toRaw } from 'vue'
     // import { Edit, Delete, Plus } from '@element-plus/icons-vue'
     import UploadAvatar from '@/components/UploadImage/UploadImage.vue'
+    import ResetPass from '@/components/ResetPass/ResetPass.vue'
     import loseFocus from '@/util/loseFocus'
     import axios from 'axios'
     import dayjs from 'dayjs'
@@ -308,6 +323,7 @@
                         if (res.status === 200) {
                             // 通知
                             ElMessage.success(res.data.message)
+                            // console.log(res.data.data)
                             store.commit('changeUserInfo', res.data.data)
                             // 重新给表单赋值
                             tempUserInfo.avatar = null
@@ -336,6 +352,7 @@
     // 密码修改校验规则
     const userPasswordFules = reactive({
         oldPassword: [
+            { required: true, message: '请输入原密码', trigger: 'blur' },
             {
                 validator: (rule, value, callback) => {
                     const reg = /^.{6,16}$/
@@ -349,6 +366,7 @@
             },
         ],
         newPassword: [
+            { required: true, message: '请输入新密码', trigger: 'blur' },
             {
                 validator: (rule, value, callback) => {
                     const reg = /^.{6,16}$/
@@ -364,6 +382,7 @@
             },
         ],
         checkPass: [
+            { required: true, message: '请确认新密码', trigger: 'blur' },
             {
                 validator: (rule, value, callback) => {
                     if (value !== userPassword.newPassword) {
@@ -389,7 +408,7 @@
                 }
                 try {
                     const res = await axios.post('/admin/changePass', userPassword)
-                    if (res.status === 200) {
+                    if (res.status === 201) {
                         ElMessage.success(`${res.data.message}，请重新登录`)
                         router.push('/login')
                     }
@@ -409,6 +428,18 @@
             userPassword[i] = ''
         }
         userPasswordRef.value.clearValidate()
+    }
+
+    // 忘记密码
+    // 忘记密码对话框
+    const resetPassDalogVisible = ref(false)
+    // 显示重置密码对话框
+    const showResetPass = () => {
+        resetPassDalogVisible.value = true
+    }
+    // 关闭对话框
+    const closeDialog = () => {
+        resetPassDalogVisible.value = false
     }
     //#endregion
 </script>
@@ -443,5 +474,13 @@
         .el-form-item {
             width: 100px;
         }
+    }
+    .forgetPassBtn {
+        cursor: pointer;
+        display: inline-block;
+        font-size: 12px;
+        transform: translate(80px, -10px);
+        margin-top: 15px;
+        color: #7d7d7d;
     }
 </style>

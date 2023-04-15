@@ -13,9 +13,9 @@
                 <!-- 用户名 -->
                 <el-form-item prop="number">
                     <el-input
-                        v-model="loginForm.number"
+                        v-model.number="loginForm.number"
                         :prefix-icon="User"
-                        placeholder="请输入用户名"
+                        placeholder="请输入学工号"
                         @keyup.enter="submitForm()"
                     />
                 </el-form-item>
@@ -33,10 +33,27 @@
                 <!-- 选择角色 -->
                 <el-form-item prop="role">
                     <el-radio-group v-model="loginForm.role">
-                        <el-radio :label="1">系统管理员</el-radio>
-                        <el-radio :label="2">设备管理员</el-radio>
+                        <el-radio
+                            :label="1"
+                            border
+                        >
+                            系统管理员
+                        </el-radio>
+                        <el-radio
+                            :label="2"
+                            border
+                        >
+                            设备管理员
+                        </el-radio>
                     </el-radio-group>
                 </el-form-item>
+                <!-- 重置密码 -->
+                <div
+                    class="forgetPassBtn"
+                    @click="showResetPass"
+                >
+                    忘记密码?
+                </div>
                 <!-- 按钮 -->
                 <el-form-item class="submit">
                     <el-button
@@ -48,31 +65,61 @@
                 </el-form-item>
             </el-form>
         </div>
+        <ResetPass
+            v-model="resetPassDalogVisible"
+            @closeDialog="closeDialog()"
+        />
     </div>
 </template>
 
 <script setup>
-    import { reactive, ref } from 'vue'
+    import { reactive, ref, watch } from 'vue'
     import { useRouter } from 'vue-router'
     import { User, Lock } from '@element-plus/icons-vue'
     import axios from 'axios'
     import { useStore } from 'vuex'
     import loseFocus from '@/util/loseFocus.js'
+    import ResetPass from '@/components/ResetPass/ResetPass.vue'
 
     //登录表单
     const loginForm = reactive({
-        number: '201931061460',
+        number: 201931061460,
         password: '061460',
-        role: null,
+        role: 1,
     })
     // 表单绑定的响应式对象
     const loginFormRef = ref()
     // 登录表单校验规则
     const loginRules = reactive({
-        number: [{ required: true, message: '请输入学工号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        // 学工号
+        number: [
+            { required: true, message: '请输入学工号', trigger: blur },
+            {
+                validator: (rule, value, callback) => {
+                    if (typeof value !== 'number') {
+                        callback(new Error('学工号必须为数字'))
+                    } else if (value.toString().length !== 12) {
+                        callback(new Error('学工号长度为12位'))
+                    }
+                    callback()
+                },
+            },
+        ],
+        password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, message: '密码至少为6位', trigger: 'blur' },
+        ],
         role: [{ required: true, message: '请选择角色', trigger: 'blur' }],
     })
+    // 检测学工号长度
+    watch(
+        () => loginForm.number,
+        (newValue, oldValue) => {
+            if (loginForm.number.toString().length >= 13) {
+                loginForm.number = oldValue
+            }
+        }
+    )
 
     const router = useRouter()
     const store = useStore()
@@ -98,6 +145,17 @@
             }
         })
     }
+
+    // 忘记密码对话框
+    const resetPassDalogVisible = ref(false)
+    // 显示重置密码对话框
+    const showResetPass = () => {
+        resetPassDalogVisible.value = true
+    }
+    // 关闭对话框
+    const closeDialog = () => {
+        resetPassDalogVisible.value = false
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -121,7 +179,15 @@
             width: 100%;
         }
         .loginForm {
+            position: relative;
             margin-top: 20px;
         }
+    }
+    .forgetPassBtn {
+        cursor: pointer;
+        display: inline-block;
+        font-size: 12px;
+        transform: translate(-173px, -10px);
+        margin-top: 15px;
     }
 </style>
