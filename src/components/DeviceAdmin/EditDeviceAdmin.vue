@@ -6,6 +6,7 @@
         @closed="closeDialog()"
     >
         <el-form
+            :inline="true"
             v-if="editForm"
             :model="editForm"
             ref="editFormRef"
@@ -41,6 +42,20 @@
                 <el-input
                     v-model="editForm.name"
                     placeholder="请输入姓名"
+                />
+            </el-form-item>
+            <!-- 所属实验室 -->
+            <el-form-item
+                label="实验室"
+                prop="lab"
+            >
+                <el-cascader
+                    v-model="editForm.lab"
+                    :options="labs"
+                    :props="options"
+                    placeholder="请选择实验室"
+                    @change="labChange"
+                    :show-all-levels="false"
                 />
             </el-form-item>
             <!-- 电话号码 -->
@@ -150,6 +165,8 @@
                 trigger: 'blur',
             },
         ],
+        lab: [{ required: true, message: '请选择所属实验室', trigger: 'blur' }],
+
         password: [{ min: 6, message: '密码至少为6位', trigger: 'blur' }],
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
     })
@@ -171,6 +188,57 @@
             }
         }
     )
+
+    //#region
+    const options = {
+        expandTrigger: 'hover',
+    }
+    // 实验室
+    const labs = [
+        {
+            value: '计算机科学学院',
+            label: '计算机科学学院',
+            children: [
+                {
+                    value: '计科院_实验室A',
+                    label: '计科院_实验室A',
+                },
+                {
+                    value: '计科院_实验室B',
+                    label: '计科院_实验室B',
+                },
+                {
+                    value: '计科院_实验室C',
+                    label: '计科院_实验室C',
+                },
+            ],
+        },
+        {
+            value: '石油与天然气工程学院',
+            label: '石油与天然气工程学院',
+            children: [
+                {
+                    value: '石工院_实验室A',
+                    label: '石工院_实验室A',
+                },
+                {
+                    value: '石工院_实验室B',
+                    label: '石工院_实验室B',
+                },
+                {
+                    value: '石工院_实验室C',
+                    label: '石工院_实验室C',
+                },
+            ],
+        },
+    ]
+    // 选择实验室
+    const labChange = value => {
+        // console.log(value)
+        editForm.academy = value[0]
+        editForm.lab = value[1]
+    }
+    //#endregion
 
     const editConfirm = () => {
         editFormRef.value.validate(async isValid => {
@@ -208,21 +276,16 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    // :deep(.el-form-item__content) {
-    //     max-width: 190px;
-    // }
     :deep(.el-form-item__label) {
         width: 80px;
     }
 
     :deep(.el-form-item) {
+        width: 50%;
         margin-right: 0 !important;
     }
-    :deep(.el-form-item__label) {
-        // position: absolute;
-    }
     :deep(.el-form-item__content) {
-        width: 100%;
+        width: 50%;
         // padding-left: 80px;
     }
     :deep(.el-select),

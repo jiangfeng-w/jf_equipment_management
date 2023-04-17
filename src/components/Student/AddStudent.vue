@@ -6,6 +6,7 @@
         @closed="closeDialog()"
     >
         <el-form
+            :inline="true"
             :model="addForm"
             ref="addFormRef"
             :rules="addFormRules"
@@ -305,13 +306,11 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    // :deep(.el-form-item__content) {
-    //     max-width: 190px;
-    // }
     :deep(.el-form-item__label) {
         width: 51px;
     }
     :deep(.el-form-item) {
+        width: 50%;
         margin-right: 0 !important;
     }
     :deep(.el-form-item__content) {

@@ -29,17 +29,47 @@
                     <el-icon><UserFilled /></el-icon>
                     <span v-show="!store.state.isCollapse">用户管理</span>
                 </template>
+                <!-- 学生管理 -->
                 <el-menu-item index="/usermanage/student">
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">学生管理</span>
                 </el-menu-item>
+                <!-- 老师管理 -->
                 <el-menu-item index="/usermanage/teacher">
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">老师管理</span>
                 </el-menu-item>
+                <!-- 设备管理员 -->
                 <el-menu-item index="/usermanage/deviceadmin">
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">设备管理员</span>
+                </el-menu-item>
+            </el-sub-menu>
+            <!-- 设备管理 -->
+            <el-sub-menu index="/equipment">
+                <template #title>
+                    <el-icon><UserFilled /></el-icon>
+                    <span v-show="!store.state.isCollapse">设备管理</span>
+                </template>
+                <!-- 添加设备 -->
+                <el-menu-item index="/equipment/equipmentadd">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">添加设备</span>
+                </el-menu-item>
+                <!-- 设备列表 -->
+                <el-menu-item index="/equipment/equipmentlist">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">设备列表</span>
+                </el-menu-item>
+                <!-- 维修申请 -->
+                <el-menu-item index="/equipment/equipmentrepair">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">维修申请</span>
+                </el-menu-item>
+                <!-- 报废申请 -->
+                <el-menu-item index="/equipment/equipmentscrap">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">报废申请</span>
                 </el-menu-item>
             </el-sub-menu>
         </el-menu>

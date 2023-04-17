@@ -83,9 +83,9 @@
 
     //登录表单
     const loginForm = reactive({
-        number: 201931061460,
-        password: '061460',
-        role: 1,
+        number: null,
+        password: '',
+        role: null,
     })
     // 表单绑定的响应式对象
     const loginFormRef = ref()

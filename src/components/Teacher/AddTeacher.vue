@@ -6,6 +6,7 @@
         @closed="closeDialog()"
     >
         <el-form
+            :inline="true"
             :model="addForm"
             ref="addFormRef"
             :rules="addFormRules"
@@ -52,6 +53,7 @@
                     :options="labs"
                     :props="props"
                     placeholder="请选择实验室"
+                    :show-all-levels="false"
                     @change="labChange"
                 />
             </el-form-item>
@@ -233,12 +235,13 @@
             ],
         },
     ]
-    //#endregion
+    // 选择实验室
     const labChange = value => {
         // console.log(value)
         addForm.academy = value[0]
         addForm.lab = value[1]
     }
+    //#endregion
 
     const addConfirm = () => {
         addFormRef.value.validate(async isValid => {
@@ -272,14 +275,12 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    // :deep(.el-form-item__content) {
-    //     max-width: 190px;
-    // }
     :deep(.el-form-item__label) {
         width: 80px;
     }
 
     :deep(.el-form-item) {
+        width: 50%;
         margin-right: 0 !important;
     }
     :deep(.el-form-item__content) {

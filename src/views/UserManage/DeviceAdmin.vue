@@ -49,6 +49,14 @@
             prop="email"
             label="邮箱"
         ></el-table-column>
+        <el-table-column
+            prop="academy"
+            label="学院"
+        ></el-table-column>
+        <el-table-column
+            prop="lab"
+            label="实验室"
+        ></el-table-column>
         <!-- 操作 -->
         <el-table-column
             label="操作"

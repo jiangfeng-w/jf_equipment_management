@@ -35,32 +35,82 @@ const routes = [
                 },
                 component: () => import('@/views/Center/Center.vue'),
             },
-            // 学生管理
+            // 用户管理
             {
-                path: '/usermanage/student',
-                name: 'student',
-                meta: {
-                    zh_name: ['用户管理', '学生管理'],
-                },
-                component: () => import('@/views/UserManage/Student.vue'),
+                path: '/usermanage',
+                name: 'usermanage',
+                children: [
+                    // 学生管理
+                    {
+                        path: '/usermanage/student',
+                        name: 'student',
+                        meta: {
+                            zh_name: ['用户管理', '学生数据'],
+                        },
+                        component: () => import('@/views/UserManage/Student.vue'),
+                    },
+                    // 老师管理
+                    {
+                        path: '/usermanage/teacher',
+                        name: 'teacher',
+                        meta: {
+                            zh_name: ['用户管理', '老师数据'],
+                        },
+                        component: () => import('@/views/UserManage/Teacher.vue'),
+                    },
+                    // 设备管理员管理
+                    {
+                        path: '/usermanage/deviceadmin',
+                        name: 'deviceadmin',
+                        meta: {
+                            zh_name: ['用户管理', '设备管理员数据'],
+                        },
+                        component: () => import('@/views/UserManage/DeviceAdmin.vue'),
+                    },
+                ],
             },
-            // 老师管理
+            // 设备管理
             {
-                path: '/usermanage/teacher',
-                name: 'teacher',
-                meta: {
-                    zh_name: ['用户管理', '老师管理'],
-                },
-                component: () => import('@/views/UserManage/Teacher.vue'),
-            },
-            // 设备管理员管理
-            {
-                path: '/usermanage/deviceadmin',
-                name: 'deviceadmin',
-                meta: {
-                    zh_name: ['用户管理', '设备管理员管理'],
-                },
-                component: () => import('@/views/UserManage/DeviceAdmin.vue'),
+                path: '/equipment',
+                name: 'equipment',
+                children: [
+                    // 添加设备
+                    {
+                        path: '/equipment/equipmentadd',
+                        name: 'equipmentadd',
+                        meta: {
+                            zh_name: ['设备管理', '添加设备'],
+                        },
+                        component: () => import('@/views/EquipmentManage/EquipmentAdd.vue'),
+                    },
+                    // 设备列表
+                    {
+                        path: '/equipment/equipmentlist',
+                        name: 'equipmentlist',
+                        meta: {
+                            zh_name: ['设备管理', '设备列表'],
+                        },
+                        component: () => import('@/views/EquipmentManage/EquipmentList.vue'),
+                    },
+                    // 维修申请
+                    {
+                        path: '/equipment/equipmentrepair',
+                        name: 'equipmentrepair',
+                        meta: {
+                            zh_name: ['设备管理', '维修申请'],
+                        },
+                        component: () => import('@/views/EquipmentManage/EquipmentRepair.vue'),
+                    },
+                    // 报废申请
+                    {
+                        path: '/equipment/equipmentscrap',
+                        name: 'equipmentscrap',
+                        meta: {
+                            zh_name: ['设备管理', '报废申请'],
+                        },
+                        component: () => import('@/views/EquipmentManage/EquipmentScrap.vue'),
+                    },
+                ],
             },
         ],
     },

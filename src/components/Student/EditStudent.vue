@@ -6,6 +6,7 @@
         @closed="closeDialog()"
     >
         <el-form
+            :inline="true"
             v-if="editForm"
             :model="editForm"
             ref="editFormRef"
@@ -67,6 +68,7 @@
                     :options="majors"
                     :props="options"
                     placeholder="请选择专业"
+                    :show-all-levels="false"
                     @change="majorChange"
                 />
             </el-form-item>
@@ -297,18 +299,13 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    // :deep(.el-form-item__content) {
-    //     max-width: 190px;
-    // }
     :deep(.el-form-item__label) {
         width: 51px;
     }
 
     :deep(.el-form-item) {
+        width: 50%;
         margin-right: 0 !important;
-    }
-    :deep(.el-form-item__label) {
-        // position: absolute;
     }
     :deep(.el-form-item__content) {
         width: 100%;
