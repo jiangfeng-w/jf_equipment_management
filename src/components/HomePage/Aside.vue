@@ -24,7 +24,10 @@
             </el-menu-item>
 
             <!-- 用户管理 -->
-            <el-sub-menu index="/usermanage">
+            <el-sub-menu
+                index="/usermanage"
+                v-if="store.state.userInfo.role === 1"
+            >
                 <template #title>
                     <el-icon><UserFilled /></el-icon>
                     <span v-show="!store.state.isCollapse">用户管理</span>
@@ -51,23 +54,24 @@
                     <el-icon><UserFilled /></el-icon>
                     <span v-show="!store.state.isCollapse">设备管理</span>
                 </template>
-                <!-- 添加设备 -->
-                <el-menu-item index="/equipment/equipmentadd">
-                    <el-icon><Menu /></el-icon>
-                    <span v-show="!store.state.isCollapse">添加设备</span>
-                </el-menu-item>
                 <!-- 设备列表 -->
                 <el-menu-item index="/equipment/equipmentlist">
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">设备列表</span>
                 </el-menu-item>
                 <!-- 维修申请 -->
-                <el-menu-item index="/equipment/equipmentrepair">
+                <el-menu-item
+                    index="/equipment/equipmentrepair"
+                    v-if="store.state.userInfo.role === 1"
+                >
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">维修申请</span>
                 </el-menu-item>
                 <!-- 报废申请 -->
-                <el-menu-item index="/equipment/equipmentscrap">
+                <el-menu-item
+                    index="/equipment/equipmentscrap"
+                    v-if="store.state.userInfo.role === 1"
+                >
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">报废申请</span>
                 </el-menu-item>

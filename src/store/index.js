@@ -10,7 +10,11 @@ export default createStore({
         // 侧边导航是否折叠
         isCollapse: false,
     },
-    getters: {},
+    getters: {
+        getRole(state) {
+            return state.userInfo.role
+        },
+    },
     mutations: {
         // 设置面包屑导航的值
         changeBreadCrumb(state, value) {

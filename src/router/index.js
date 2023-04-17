@@ -1,9 +1,15 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '../store/index'
 import axios from 'axios'
 
 const routes = [
     {
         path: '/:pathMatch(.*)*',
+        component: () => import('@/views/NotFound/NotFound.vue'),
+    },
+    {
+        path: '/notfound',
+        name: '/notfound',
         component: () => import('@/views/NotFound/NotFound.vue'),
     },
     {
@@ -45,6 +51,7 @@ const routes = [
                         path: '/usermanage/student',
                         name: 'student',
                         meta: {
+                            role: 1,
                             zh_name: ['用户管理', '学生数据'],
                         },
                         component: () => import('@/views/UserManage/Student.vue'),
@@ -54,6 +61,7 @@ const routes = [
                         path: '/usermanage/teacher',
                         name: 'teacher',
                         meta: {
+                            role: 1,
                             zh_name: ['用户管理', '老师数据'],
                         },
                         component: () => import('@/views/UserManage/Teacher.vue'),
@@ -63,6 +71,7 @@ const routes = [
                         path: '/usermanage/deviceadmin',
                         name: 'deviceadmin',
                         meta: {
+                            role: 1,
                             zh_name: ['用户管理', '设备管理员数据'],
                         },
                         component: () => import('@/views/UserManage/DeviceAdmin.vue'),
@@ -79,6 +88,7 @@ const routes = [
                         path: '/equipment/equipmentadd',
                         name: 'equipmentadd',
                         meta: {
+                            role: 2,
                             zh_name: ['设备管理', '添加设备'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentAdd.vue'),
@@ -97,7 +107,8 @@ const routes = [
                         path: '/equipment/equipmentrepair',
                         name: 'equipmentrepair',
                         meta: {
-                            zh_name: ['设备管理', '维修申请'],
+                            role: 1,
+                            zh_name: ['设备管理', '维修审批'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentRepair.vue'),
                     },
@@ -106,7 +117,8 @@ const routes = [
                         path: '/equipment/equipmentscrap',
                         name: 'equipmentscrap',
                         meta: {
-                            zh_name: ['设备管理', '报废申请'],
+                            role: 1,
+                            zh_name: ['设备管理', '报废审批'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentScrap.vue'),
                     },
@@ -120,6 +132,9 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes,
 })
+
+// 实例化 store
+// const store = useStore()
 
 router.beforeEach(async (to, from, next) => {
     // 跳转到登录
@@ -135,9 +150,20 @@ router.beforeEach(async (to, from, next) => {
             try {
                 const res = await axios.get('/admin/checkToken')
                 if (res.status === 200) {
-                    next()
+                    // 权限判断
+                    if (to.meta.role) {
+                        if (to.meta.role === store.state.userInfo.role) {
+                            next()
+                        } else {
+                            // 如果用户没有权限，重定向到404页面
+                            next('/notfound')
+                        }
+                    } else {
+                        next()
+                    }
                 }
             } catch (error) {
+                console.log(error)
                 next('/login')
             }
         }
