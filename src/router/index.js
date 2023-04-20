@@ -93,6 +93,16 @@ const routes = [
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentAdd.vue'),
                     },
+                    // 编辑设备
+                    {
+                        path: '/equipment/equipmentedit/:id',
+                        name: 'equipmentedit',
+                        meta: {
+                            role: 2,
+                            zh_name: ['设备管理', '编辑设备'],
+                        },
+                        component: () => import('@/views/EquipmentManage/EquipmentEdit.vue'),
+                    },
                     // 设备列表
                     {
                         path: '/equipment/equipmentlist',
@@ -107,8 +117,8 @@ const routes = [
                         path: '/equipment/equipmentrepair',
                         name: 'equipmentrepair',
                         meta: {
-                            role: 1,
-                            zh_name: ['设备管理', '维修审批'],
+                            // role: 2,
+                            zh_name: ['设备管理', '维修列表'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentRepair.vue'),
                     },
@@ -117,8 +127,8 @@ const routes = [
                         path: '/equipment/equipmentscrap',
                         name: 'equipmentscrap',
                         meta: {
-                            role: 1,
-                            zh_name: ['设备管理', '报废审批'],
+                            // role: 2,
+                            zh_name: ['设备管理', '报废列表'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentScrap.vue'),
                     },
@@ -163,7 +173,6 @@ router.beforeEach(async (to, from, next) => {
                     }
                 }
             } catch (error) {
-                console.log(error)
                 next('/login')
             }
         }

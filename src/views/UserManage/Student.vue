@@ -32,10 +32,14 @@
         table-layout="auto"
         @selection-change="selectionLineChangeHandle"
     >
-        <el-table-column type="selection"></el-table-column>
+        <el-table-column
+            type="selection"
+            fixed
+        ></el-table-column>
         <el-table-column
             prop="number"
             label="学号"
+            fixed
         ></el-table-column>
         <el-table-column
             prop="name"
@@ -75,6 +79,7 @@
         <el-table-column
             label="操作"
             width="250"
+            fixed="right"
         >
             <template #default="scope">
                 <!-- 编辑按钮 -->

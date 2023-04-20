@@ -5,16 +5,16 @@
         :icon="ArrowLeft"
     >
         <template #content>
-            <span>添加设备</span>
+            <span>修改设备信息</span>
         </template>
     </el-page-header>
 
     <!-- 填写表单 -->
     <el-form
         :inline="true"
-        ref="addEquipmentFormRef"
-        :model="addEquipmentForm"
-        :rules="addEquipmentFormRules"
+        ref="editEquipmentFormRef"
+        :model="editEquipmentForm"
+        :rules="editEquipmentFormRules"
     >
         <!-- 设备名称 -->
         <el-form-item
@@ -22,7 +22,7 @@
             prop="name"
         >
             <el-input
-                v-model="addEquipmentForm.name"
+                v-model="editEquipmentForm.name"
                 placeholder="请输入设备名称"
             />
         </el-form-item>
@@ -32,7 +32,7 @@
             prop="price"
         >
             <el-input
-                v-model="addEquipmentForm.price"
+                v-model="editEquipmentForm.price"
                 @focus="removeUnit"
                 @blur="plusUnit"
                 placeholder="请输入设备总价"
@@ -44,7 +44,7 @@
             prop="buy_time"
         >
             <el-date-picker
-                v-model="addEquipmentForm.buy_time"
+                v-model="editEquipmentForm.buy_time"
                 type="date"
                 placeholder="请选择购置日期"
             ></el-date-picker>
@@ -55,7 +55,7 @@
             prop="model"
         >
             <el-input
-                v-model="addEquipmentForm.model"
+                v-model="editEquipmentForm.model"
                 placeholder="请输入设备型号"
             />
         </el-form-item>
@@ -65,7 +65,7 @@
             prop="specification"
         >
             <el-input
-                v-model="addEquipmentForm.specification"
+                v-model="editEquipmentForm.specification"
                 placeholder="请输入设备规格"
             />
         </el-form-item>
@@ -75,7 +75,7 @@
             prop="country"
         >
             <el-select
-                v-model="addEquipmentForm.country"
+                v-model="editEquipmentForm.country"
                 clearable
                 filterable
                 allow-create
@@ -96,7 +96,7 @@
             prop="manufacturer"
         >
             <el-select
-                v-model="addEquipmentForm.manufacturer"
+                v-model="editEquipmentForm.manufacturer"
                 clearable
                 filterable
                 allow-create
@@ -117,7 +117,7 @@
             prop="classification"
         >
             <el-select
-                v-model="addEquipmentForm.classification"
+                v-model="editEquipmentForm.classification"
                 clearable
                 filterable
                 allow-create
@@ -138,7 +138,7 @@
             prop="discipline_classification"
         >
             <el-select
-                v-model="addEquipmentForm.discipline_classification"
+                v-model="editEquipmentForm.discipline_classification"
                 clearable
                 filterable
                 allow-create
@@ -159,7 +159,7 @@
             prop="manage_classification"
         >
             <el-select
-                v-model="addEquipmentForm.manage_classification"
+                v-model="editEquipmentForm.manage_classification"
                 clearable
                 filterable
                 allow-create
@@ -180,7 +180,7 @@
             prop="unit"
         >
             <el-select
-                v-model="addEquipmentForm.unit"
+                v-model="editEquipmentForm.unit"
                 clearable
                 filterable
                 allow-create
@@ -201,7 +201,7 @@
             prop="place"
         >
             <el-input
-                v-model="addEquipmentForm.place"
+                v-model="editEquipmentForm.place"
                 placeholder="请输入安置位置"
             />
         </el-form-item>
@@ -212,7 +212,7 @@
             prop="function_range"
         >
             <el-input
-                v-model="addEquipmentForm.function_range"
+                v-model="editEquipmentForm.function_range"
                 placeholder="请输入功能应用范围"
                 type="textarea"
                 autosize
@@ -225,7 +225,7 @@
             prop="technical_indicators"
         >
             <el-input
-                v-model="addEquipmentForm.technical_indicators"
+                v-model="editEquipmentForm.technical_indicators"
                 placeholder="请输入主要技术指标"
                 type="textarea"
                 autosize
@@ -237,7 +237,7 @@
             prop="pic"
         >
             <UploadImage
-                :image="addEquipmentForm.pic"
+                :image="editEquipmentForm.pic"
                 @fileChange="handleChange"
                 :max_height="'250px'"
                 :max_width="'500px'"
@@ -267,17 +267,16 @@
         </div>
     </el-form>
 </template>
-
 <script setup>
+    import { ref, reactive, computed, onMounted, toRaw } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
-    import { ArrowLeft } from '@element-plus/icons-vue'
     import { useStore } from 'vuex'
-    import { ref, reactive, computed, onMounted } from 'vue'
+    import axios from 'axios'
+    import { ArrowLeft } from '@element-plus/icons-vue'
     import UploadImage from '@/components/UploadImage/UploadImage.vue'
     import uploadFile from '@/util/uploadFile'
     import dayjs from 'dayjs'
     import loseFocus from '@/util/loseFocus'
-    import axios from 'axios'
 
     //#region 面包屑导航数据
     const route = useRoute()
@@ -286,6 +285,16 @@
     store.commit('changeBreadCrumb', zhNames)
     //#endregion
 
+    // 用id获取设备信息
+    onMounted(async () => {
+        const res = await axios.get(`/admin/equipment/list/${route.params.id}`)
+        Object.assign(editEquipmentForm, res.data.data)
+        editEquipmentForm.oldPic = editEquipmentForm.pic
+        // 保存原始数据
+        initEditForm = JSON.parse(JSON.stringify(toRaw(editEquipmentForm)))
+        getOptions()
+    })
+
     // 从数据库获取数据，更改el-select的options
     const getOptions = async () => {
         const res = await axios.get('/admin/equipment/options')
@@ -293,12 +302,11 @@
         if (options) {
             for (const i in options) {
                 options[i] = Array.from(new Set([...options[i], ...res.data.data[i]]))
+                // 去掉空项
+                options[i] = options[i].filter(item => item !== '')
             }
         }
     }
-    onMounted(() => {
-        getOptions()
-    })
 
     const router = useRouter()
     // 回到设备列表
@@ -306,9 +314,11 @@
         router.push('/equipment/equipmentlist')
     }
     // 表单ref
-    const addEquipmentFormRef = ref()
+    const editEquipmentFormRef = ref()
+    // 原始数据
+    let initEditForm
     // 表单数据
-    const addEquipmentForm = reactive({
+    const editEquipmentForm = reactive({
         // 设备名称
         name: '',
         // 价格
@@ -353,7 +363,7 @@
         manager_email: store.state.userInfo.email,
     })
     // 表单验证规则
-    const addEquipmentFormRules = reactive({
+    const editEquipmentFormRules = reactive({
         name: [{ required: true, message: '请输入设备名称', trigger: 'blur' }],
         price: [{ required: true, message: '请输入设备总价', trigger: 'blur' }],
         buy_time: [{ required: true, message: '请选择购置日期', trigger: 'blur' }],
@@ -363,14 +373,14 @@
     //#region 计算price的显示框
     // 聚焦时
     const removeUnit = () => {
-        if (addEquipmentForm.price) {
-            addEquipmentForm.price = addEquipmentForm.price.replace('元', '')
+        if (editEquipmentForm.price) {
+            editEquipmentForm.price = editEquipmentForm.price.replace('元', '')
         }
     }
     // 失焦时
     const plusUnit = () => {
-        if (addEquipmentForm.price) {
-            addEquipmentForm.price = addUnit(addEquipmentForm.price)
+        if (editEquipmentForm.price) {
+            editEquipmentForm.price = addUnit(editEquipmentForm.price)
         }
     }
     const addUnit = value => {
@@ -398,7 +408,7 @@
         { range: '1000万以上', min: 10000000, max: Infinity },
     ])
     // 将price转成number类型
-    const priceNumber = computed(() => parseFloat(addEquipmentForm.price))
+    const priceNumber = computed(() => parseFloat(editEquipmentForm.price))
     // 计算price_range
     const price_range = computed(() => {
         const price = priceNumber.value
@@ -499,40 +509,47 @@
     // 选择图片
     const handleChange = file => {
         // console.log(file)
-        addEquipmentForm.pic = URL.createObjectURL(file)
-        addEquipmentForm.file = file
+        editEquipmentForm.pic = URL.createObjectURL(file)
+        editEquipmentForm.file = file
     }
 
     // 提交表单
     const submitForm = () => {
         loseFocus()
-        ElMessageBox.confirm('您是否确认添加此设备？', {
-            confirmButtonText: '添加',
-            cancelButtonText: '取消',
-            type: 'warning',
-        })
-            .then(() => {
-                addEquipmentFormRef.value.validate(async isValid => {
-                    // 格式化数据
-                    addEquipmentForm.price_range = price_range.value
-                    addEquipmentForm.buy_time = dayjs(addEquipmentForm.buy_time).valueOf()
-                    // console.log(addEquipmentForm)
-                    if (isValid) {
-                        try {
-                            const res = await uploadFile('/admin/equipment/add', addEquipmentForm)
-                            if (res.status === 201) {
-                                ElMessage.success(res.data.message)
-                                router.push('/equipment/equipmentlist')
-                            }
-                        } catch (error) {
-                            ElMessage.error(error.response.data.error)
-                        }
-                    }
-                })
+        // 数据是否改变
+        if (!(JSON.stringify(initEditForm) === JSON.stringify(editEquipmentForm))) {
+            // 修改了信息
+            ElMessageBox.confirm('您是否确认修改此设备的信息？', {
+                confirmButtonText: '修改',
+                cancelButtonText: '取消',
+                type: 'warning',
             })
-            .catch(() => {})
+                .then(() => {
+                    editEquipmentFormRef.value.validate(async isValid => {
+                        // 格式化数据
+                        editEquipmentForm.price_range = price_range.value
+                        editEquipmentForm.buy_time = dayjs(editEquipmentForm.buy_time).valueOf()
+                        // console.log(editEquipmentForm)
+                        if (isValid) {
+                            try {
+                                const res = await uploadFile('/admin/equipment/edit', editEquipmentForm)
+                                if (res.status === 201) {
+                                    ElMessage.success(res.data.message)
+                                    router.push('/equipment/equipmentlist')
+                                }
+                            } catch (error) {
+                                ElMessage.error(error.response.data.error)
+                            }
+                        }
+                    })
+                })
+                .catch(() => {})
+        } else {
+            ElMessage.info('请修改后再提交')
+        }
     }
 </script>
+
 <style lang="scss" scoped>
     .el-page-header {
         margin-bottom: 40px;
