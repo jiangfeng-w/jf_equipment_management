@@ -60,14 +60,36 @@
                     <span v-show="!store.state.isCollapse">设备列表</span>
                 </el-menu-item>
                 <!-- 维修申请 -->
-                <el-menu-item index="/equipment/equipmentrepair">
+                <el-menu-item
+                    index="/equipment/equipmentrepair"
+                    v-if="store.state.userInfo.role === 2"
+                >
                     <el-icon><Menu /></el-icon>
-                    <span v-show="!store.state.isCollapse">维修列表</span>
+                    <span v-show="!store.state.isCollapse">设备维修</span>
                 </el-menu-item>
                 <!-- 报废申请 -->
-                <el-menu-item index="/equipment/equipmentscrap">
+                <el-menu-item
+                    index="/equipment/equipmentscrap"
+                    v-if="store.state.userInfo.role === 2"
+                >
                     <el-icon><Menu /></el-icon>
-                    <span v-show="!store.state.isCollapse">报废列表</span>
+                    <span v-show="!store.state.isCollapse">设备报废</span>
+                </el-menu-item>
+                <!-- 维修审批 -->
+                <el-menu-item
+                    index="/equipment/repairapproval"
+                    v-if="store.state.userInfo.role === 1"
+                >
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">维修审批</span>
+                </el-menu-item>
+                <!-- 报废审批 -->
+                <el-menu-item
+                    index="/equipment/scrapapproval"
+                    v-if="store.state.userInfo.role === 1"
+                >
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">报废审批</span>
                 </el-menu-item>
             </el-sub-menu>
         </el-menu>

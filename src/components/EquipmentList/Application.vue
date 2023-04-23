@@ -9,9 +9,9 @@
         <div class="container">
             <div class="content">
                 <!-- 图片 -->
-                <div class="image">
+                <!-- <div class="image">
                     <img :src="applicationEquip.pic" />
-                </div>
+                </div> -->
                 <div class="form">
                     <el-form
                         ref="formDataRef"
@@ -58,6 +58,18 @@
                                 v-model="formData.reason_application"
                             ></el-input>
                         </el-form-item>
+                        <!-- 设备图片 -->
+                        <el-form-item
+                            label="设备现状"
+                            prop="pic"
+                        >
+                            <UploadImage
+                                :image="formData.pic"
+                                @fileChange="handleChange"
+                                :max_height="'255px'"
+                                :max_width="'400px'"
+                            />
+                        </el-form-item>
                     </el-form>
                 </div>
             </div>
@@ -81,6 +93,8 @@
     import { ref, reactive, onMounted } from 'vue'
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
+    import UploadImage from '@/components/UploadImage/UploadImage.vue'
+    import uploadFile from '@/util/uploadFile'
 
     const props = defineProps({
         applicationType: Number,
@@ -89,6 +103,7 @@
     })
     const assignData = () => {
         Object.assign(formData, props.applicationEquip)
+        formData.pic = null
         formData.state = props.applicationType
         // console.log(formData)
     }
@@ -103,7 +118,15 @@
     const formDataRules = reactive({
         reason_application: [{ required: true, message: '请输入申请理由', trigger: 'blur' }],
         repair_person: [{ required: true, message: '请填写维修负责公司', trigger: 'blur' }],
+        pic: [{ required: true, message: '请选择设备照片', trigger: 'blur' }],
     })
+
+    // 选择图片
+    const handleChange = file => {
+        // console.log(file)
+        formData.pic = URL.createObjectURL(file)
+        formData.file = file
+    }
 
     // 注册emit
     const emit = defineEmits(['closeDialog', 'getTableList'])
@@ -120,7 +143,7 @@
             if (isValid) {
                 // console.log(formData)
                 try {
-                    const res = await axios.post('/admin/equipment/application', formData)
+                    const res = await uploadFile('/admin/equipment/application', formData)
                     if (res.status === 201) {
                         ElMessage.success(res.data.message)
                         closeDialog()

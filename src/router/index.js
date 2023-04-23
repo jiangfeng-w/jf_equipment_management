@@ -117,8 +117,8 @@ const routes = [
                         path: '/equipment/equipmentrepair',
                         name: 'equipmentrepair',
                         meta: {
-                            // role: 2,
-                            zh_name: ['设备管理', '维修列表'],
+                            role: 2,
+                            zh_name: ['设备管理', '设备维修'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentRepair.vue'),
                     },
@@ -127,10 +127,30 @@ const routes = [
                         path: '/equipment/equipmentscrap',
                         name: 'equipmentscrap',
                         meta: {
-                            // role: 2,
-                            zh_name: ['设备管理', '报废列表'],
+                            role: 2,
+                            zh_name: ['设备管理', '设备报废'],
                         },
                         component: () => import('@/views/EquipmentManage/EquipmentScrap.vue'),
+                    },
+                    // 维修审批
+                    {
+                        path: '/equipment/repairapproval',
+                        name: 'repairapproval',
+                        meta: {
+                            role: 1,
+                            zh_name: ['设备管理', '维修审批'],
+                        },
+                        component: () => import('@/views/EquipmentManage/RepairApproval.vue'),
+                    },
+                    // 报废审批
+                    {
+                        path: '/equipment/scrapapproval',
+                        name: 'scrapapproval',
+                        meta: {
+                            role: 1,
+                            zh_name: ['设备管理', '报废审批'],
+                        },
+                        component: () => import('@/views/EquipmentManage/ScrapApproval.vue'),
                     },
                 ],
             },

@@ -132,7 +132,7 @@
                 <template #default="scope">
                     <el-tag
                         :type="getType(scope.row.state)"
-                        effect="dark"
+                        :effect="getEffect(scope.row.state)"
                         :hit="true"
                     >
                         {{ getState(scope.row.state) }}
@@ -232,12 +232,16 @@
     })
     // 获取设备状态
     const getType = state => {
-        const colors = ['', 'success', 'warning', 'danger', 'info']
+        const colors = ['', 'warning', 'warning', 'warning', 'danger', 'danger', 'danger']
         return colors[state]
+    }
+    const getEffect = state => {
+        const effects = ['dark', 'light', 'plain', 'dark', 'light', 'plain', 'dark']
+        return effects[state]
     }
     // 获取设备状态
     const getState = state => {
-        const stateArr = ['正常状态', '维修申请', '维修状态', '报废申请', '报废状态']
+        const stateArr = ['正常状态', '维修申请中', '维修申请失败', '维修中', '报废申请中', '报废申请失败', '已报废']
         return stateArr[state]
     }
     // 格式化时间
@@ -281,7 +285,7 @@
         loseFocus()
         if (data.state === 0) {
             applicationTitle.value = '报废申请'
-            applicationType.value = 3
+            applicationType.value = 4
             applicationEquip.value = data
             applicationDialog.value = true
         } else {

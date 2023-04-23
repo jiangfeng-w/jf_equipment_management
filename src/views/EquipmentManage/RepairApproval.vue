@@ -2,7 +2,7 @@
     <el-card>
         <template #header>
             <div class="card-header">
-                <span>设备报废</span>
+                <span>设备维修</span>
             </div>
         </template>
         <!-- 表格 -->
@@ -52,17 +52,8 @@
                     {{ formatTime(scope.row.apply_time) }}
                 </template>
             </el-table-column>
-            <!-- 审批时间 -->
-            <el-table-column
-                label="审批时间"
-                width="170"
-            >
-                <template #default="scope">
-                    {{ formatTime(scope.row.approve_time) }}
-                </template>
-            </el-table-column>
-            <!-- 报废原因 -->
-            <el-table-column label="报废原因">
+            <!-- 维修原因 -->
+            <el-table-column label="维修原因">
                 <template #default="scope">
                     <el-tooltip
                         :show-after="200"
@@ -76,13 +67,35 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
+            <!-- 维修负责 -->
+            <el-table-column
+                label="维修负责"
+                prop="repair_person"
+            ></el-table-column>
             <!-- 申请人 -->
             <el-table-column
                 label="设备负责人"
                 prop="manager_name"
                 min-width="100"
             ></el-table-column>
-
+            <!-- 联系方式 -->
+            <el-table-column
+                label="联系方式"
+                min-width="150"
+            >
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.manager_email"
+                        placement="top"
+                    >
+                        {{ scope.row.manager_email }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
             <!-- 状态 -->
             <el-table-column
                 label="设备状态"
@@ -90,60 +103,58 @@
             >
                 <template #default="scope">
                     <el-tag
-                        type="danger"
-                        :effect="getEffect(scope.row.state)"
+                        type="warning"
+                        effect="dark"
                         :hit="true"
                     >
-                        {{ getState(scope.row.state) }}
+                        维修申请中
                     </el-tag>
                 </template>
             </el-table-column>
-            <!-- 设备管理员操作 -->
+            <!-- 系统管理员操作 -->
             <el-table-column
                 label="操作"
                 width="180"
                 fixed="right"
             >
                 <template #default="scope">
-                    <!-- 再次申请 -->
+                    <!-- 同意申请 -->
                     <el-popconfirm
-                        v-if="scope.row.state === 1"
                         width="160"
                         confirm-button-text="是"
                         cancel-button-text="否"
-                        title="确认再次申请吗？"
-                        @confirm="reApply(scope.row.id)"
+                        title="确认同意申请吗？"
+                        @confirm="agree(scope.row.id)"
                     >
                         <template #reference>
                             <el-button
-                                v-if="scope.row.state === 1"
                                 type="primary"
                                 size="small"
                                 link
-                                :icon="Setting"
+                                :icon="Check"
                                 @click="loseFocus()"
                             >
-                                再次申请
+                                同意申请
                             </el-button>
                         </template>
                     </el-popconfirm>
-                    <!-- 取消申请 -->
+                    <!-- 拒绝申请 -->
                     <el-popconfirm
                         width="160"
                         confirm-button-text="是"
                         cancel-button-text="否"
-                        title="确认取消申请吗？"
-                        @confirm="cancleApply(scope.row)"
+                        title="确认拒绝申请吗？"
+                        @confirm="refuse(scope.row.id)"
                     >
                         <template #reference>
                             <el-button
                                 type="primary"
                                 size="small"
                                 link
-                                :icon="Delete"
+                                :icon="Close"
                                 @click="loseFocus()"
                             >
-                                取消申请
+                                拒绝申请
                             </el-button>
                         </template>
                     </el-popconfirm>
@@ -157,11 +168,11 @@
     import { ref, reactive, onMounted } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import { useStore } from 'vuex'
-    import { Delete, Plus, Edit, Setting, Check, Close } from '@element-plus/icons-vue'
+    import { Check, Close } from '@element-plus/icons-vue'
     import dayjs from 'dayjs'
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
-    import ExpandInfo from '@/components/EquipmentScrap/ExpandInfo.vue'
+    import ExpandInfo from '@/components/EquipmentRepair/ExpandInfo.vue'
 
     //#region 面包屑导航数据
     const route = useRoute()
@@ -172,9 +183,11 @@
 
     // 获取列表
     const getTableList = async () => {
-        const res = await axios.get(`/admin/equipment/scrap/${store.state.userInfo.number}`)
-
-        tableList.splice(0, tableList.length, ...res.data.data)
+        const res = await axios.get(`/admin/equipment/repair`)
+        const result = res.data.data.filter(item => {
+            return item.state === 0
+        })
+        tableList.splice(0, tableList.length, ...result)
         // console.log(tableList)
     }
     // 表格数据
@@ -184,33 +197,18 @@
         getTableList()
     })
 
-    // 获取设备状态
-    const getEffect = state => {
-        const effects = ['light', 'plain', 'dark']
-        return effects[state]
-    }
-    // 获取设备状态
-    const getState = state => {
-        const stateArr = ['申请中', '申请失败', '已报废']
-        return stateArr[state]
-    }
     // 格式化时间
     const formatTime = timeStamp => {
-        if (timeStamp) {
-            const formattedTime = dayjs(timeStamp).format('YYYY-MM-DD HH:mm:ss')
-            return formattedTime
-        } else {
-            return '未审批'
-        }
+        const formattedTime = dayjs(timeStamp).format('YYYY-MM-DD HH:mm:ss')
+        return formattedTime
     }
 
-    //#region 设备管理员
-    // 再次申请
-    // 再次申请
-    const reApply = async id => {
+    //#region 系统管理员
+    // 同意申请
+    const agree = async id => {
         // console.log(id)
         try {
-            const res = await axios.post('/admin/scrap/reapply', { id })
+            const res = await axios.post('/admin/repair/agree', { id })
             if (res.status === 201) {
                 ElMessage.success(res.data.message)
                 getTableList()
@@ -220,11 +218,11 @@
             getTableList()
         }
     }
-    // 取消申请
-    const cancleApply = async data => {
+    // 拒绝申请
+    const refuse = async id => {
         // console.log(id)
         try {
-            const res = await axios.post('/admin/scrap/repaircompleted', { id: data.id, pic: data.now_pic })
+            const res = await axios.post('/admin/repair/refuse', { id })
             if (res.status === 201) {
                 ElMessage.success(res.data.message)
                 getTableList()

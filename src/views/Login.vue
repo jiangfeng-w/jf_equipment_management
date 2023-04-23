@@ -93,7 +93,7 @@
     const loginRules = reactive({
         // 学工号
         number: [
-            { required: true, message: '请输入学工号', trigger: blur },
+            { required: true, message: '请输入学工号', trigger: 'blur' },
             {
                 validator: (rule, value, callback) => {
                     if (typeof value !== 'number') {
@@ -103,6 +103,7 @@
                     }
                     callback()
                 },
+                trigger: 'blur',
             },
         ],
         password: [
