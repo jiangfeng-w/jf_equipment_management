@@ -61,21 +61,6 @@
                     {{ formatTime(scope.row.approve_time) }}
                 </template>
             </el-table-column>
-            <!-- 报废原因 -->
-            <el-table-column label="报废原因">
-                <template #default="scope">
-                    <el-tooltip
-                        :show-after="200"
-                        :hide-after="0"
-                        class="box-item"
-                        effect="dark"
-                        :content="scope.row.reason_application"
-                        placement="top"
-                    >
-                        {{ scope.row.reason_application }}
-                    </el-tooltip>
-                </template>
-            </el-table-column>
             <!-- 申请人 -->
             <el-table-column
                 label="设备负责人"

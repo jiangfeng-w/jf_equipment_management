@@ -10,7 +10,7 @@
         <el-form-item label="老师姓名">
             <el-input
                 v-model="searchForm.name"
-                placeholder="输入老师姓名"
+                placeholder="搜索老师姓名"
             ></el-input>
         </el-form-item>
         <!-- 专业 -->
@@ -95,7 +95,10 @@
             @selection-change="selectionLineChangeHandle"
             border
         >
-            <el-table-column type="selection"></el-table-column>
+            <el-table-column
+                type="selection"
+                fixed
+            ></el-table-column>
             <el-table-column
                 type="index"
                 label="序号"
@@ -106,27 +109,70 @@
                 sortable
                 prop="number"
                 label="学工号"
+                width="130"
+                fixed
             ></el-table-column>
             <el-table-column
                 prop="name"
                 label="姓名"
+                width="100"
             ></el-table-column>
-            <el-table-column
-                prop="phone_number"
-                label="手机号"
-            ></el-table-column>
-            <el-table-column
-                prop="email"
-                label="邮箱"
-            ></el-table-column>
-            <el-table-column
-                prop="academy"
-                label="学院"
-            ></el-table-column>
-            <el-table-column
-                prop="lab"
-                label="实验室"
-            ></el-table-column>
+            <el-table-column label="手机号">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.phone_number"
+                        placement="top"
+                    >
+                        {{ scope.row.phone_number }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="邮箱">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.email"
+                        placement="top"
+                    >
+                        {{ scope.row.email }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="学院">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.academy"
+                        placement="top"
+                    >
+                        {{ scope.row.academy }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="实验室">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.lab"
+                        placement="top"
+                    >
+                        {{ scope.row.lab }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
             <!-- 操作 -->
             <el-table-column
                 label="操作"
@@ -198,7 +244,7 @@
 <script setup>
     import { useRoute } from 'vue-router'
     import { useStore } from 'vuex'
-    import { ref, reactive, onMounted, toRaw } from 'vue'
+    import { ref, reactive, onMounted } from 'vue'
     import { Edit, Delete, Plus, Refresh, Search } from '@element-plus/icons-vue'
     import AddTeacher from '@/components/Teacher/AddTeacher.vue'
     import EditTeacher from '@/components/Teacher/EditTeacher.vue'
@@ -220,7 +266,6 @@
         pageSize: 5,
         currentPage: 1,
     })
-    const initSearchForm = JSON.parse(JSON.stringify(toRaw(searchForm)))
     const labs = reactive([
         {
             value: '计算机科学学院',
@@ -277,7 +322,8 @@
     // 重置
     const resetSearchForm = () => {
         loseFocus()
-        Object.assign(searchForm, initSearchForm)
+        searchForm.name = ''
+        searchForm.lab = []
         getLength()
         getTableList()
     }
@@ -407,8 +453,8 @@
 </script>
 <style lang="scss" scoped>
     .operate {
-        width: 100px;
-        margin: 20px 0;
+        width: 92px;
+        margin-bottom: 20px;
         display: flex;
         flex-wrap: nowrap;
     }

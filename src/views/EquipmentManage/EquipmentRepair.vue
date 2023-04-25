@@ -61,21 +61,6 @@
                     {{ formatTime(scope.row.approve_time) }}
                 </template>
             </el-table-column>
-            <!-- 维修原因 -->
-            <el-table-column label="维修原因">
-                <template #default="scope">
-                    <el-tooltip
-                        :show-after="200"
-                        :hide-after="0"
-                        class="box-item"
-                        effect="dark"
-                        :content="scope.row.reason_application"
-                        placement="top"
-                    >
-                        {{ scope.row.reason_application }}
-                    </el-tooltip>
-                </template>
-            </el-table-column>
             <!-- 维修负责 -->
             <el-table-column
                 label="维修负责"
@@ -155,7 +140,7 @@
                     <!-- 维修完成 -->
                     <el-popconfirm
                         v-if="scope.row.state === 2"
-                        width="160"
+                        width="175"
                         confirm-button-text="是"
                         cancel-button-text="否"
                         title="确认已维修完成吗？"

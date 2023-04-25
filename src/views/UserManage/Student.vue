@@ -10,13 +10,14 @@
         <el-form-item label="学生姓名">
             <el-input
                 v-model="searchForm.name"
-                placeholder="输入学生姓名"
+                placeholder="搜索学生姓名"
             ></el-input>
         </el-form-item>
         <!-- 培训情况 -->
         <el-form-item label="培训情况">
             <el-select
                 v-model="searchForm.trained"
+                multiple
                 clearable
                 filterable
                 placeholder="请选择培训情况"
@@ -32,6 +33,7 @@
         <!-- 专业 -->
         <el-form-item label="学生专业">
             <el-cascader
+                clearable
                 filterable
                 v-model="searchForm.major"
                 :options="majors"
@@ -43,6 +45,7 @@
         <!-- 年级 -->
         <el-form-item label="学生年级">
             <el-cascader
+                clearable
                 filterable
                 v-model="searchForm.grade"
                 :options="grades"
@@ -284,7 +287,7 @@
 <script setup>
     import { useRoute } from 'vue-router'
     import { useStore } from 'vuex'
-    import { ref, reactive, onMounted, toRaw } from 'vue'
+    import { ref, reactive, onMounted } from 'vue'
     import { Edit, Delete, Plus, Refresh, Search } from '@element-plus/icons-vue'
     import AddStudent from '@/components/Student/AddStudent.vue'
     import EditStudent from '@/components/Student/EditStudent.vue'
@@ -305,11 +308,10 @@
         name: '',
         major: [],
         grade: [],
-        trained: '',
+        trained: [],
         pageSize: 5,
         currentPage: 1,
     })
-    const initSearchForm = JSON.parse(JSON.stringify(toRaw(searchForm)))
     const majors = reactive([])
     const grades = reactive([])
     const traineds = [
@@ -348,7 +350,10 @@
     // 重置
     const resetSearchForm = () => {
         loseFocus()
-        Object.assign(searchForm, initSearchForm)
+        searchForm.name = ''
+        searchForm.major = []
+        searchForm.grade = []
+        searchForm.trained = []
         getLength()
         getTableList()
     }
@@ -490,8 +495,8 @@
 </script>
 <style lang="scss" scoped>
     .operate {
-        width: 100px;
-        margin: 20px 0;
+        width: 92px;
+        margin-bottom: 20px;
         display: flex;
         flex-wrap: nowrap;
     }

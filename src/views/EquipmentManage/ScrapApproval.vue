@@ -101,7 +101,7 @@
                     effect="dark"
                     :hit="true"
                 >
-                    报废申请中
+                    申请中
                 </el-tag>
             </el-table-column>
             <!-- 系统管理员操作 -->

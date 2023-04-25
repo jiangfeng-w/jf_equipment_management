@@ -107,7 +107,7 @@
                         effect="dark"
                         :hit="true"
                     >
-                        维修申请中
+                        申请中
                     </el-tag>
                 </template>
             </el-table-column>
