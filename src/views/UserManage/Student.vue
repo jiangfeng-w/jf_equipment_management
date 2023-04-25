@@ -1,4 +1,72 @@
 <template>
+    <!-- 筛选搜索 -->
+    <el-form
+        :inline="true"
+        :model="searchForm"
+        ref="searchFormRef"
+        @keyup.enter="search"
+    >
+        <!-- 姓名 -->
+        <el-form-item label="学生姓名">
+            <el-input
+                v-model="searchForm.name"
+                placeholder="输入学生姓名"
+            ></el-input>
+        </el-form-item>
+        <!-- 培训情况 -->
+        <el-form-item label="培训情况">
+            <el-select
+                v-model="searchForm.trained"
+                clearable
+                filterable
+                placeholder="请选择培训情况"
+            >
+                <el-option
+                    v-for="item in traineds"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+            </el-select>
+        </el-form-item>
+        <!-- 专业 -->
+        <el-form-item label="学生专业">
+            <el-cascader
+                filterable
+                v-model="searchForm.major"
+                :options="majors"
+                :props="props"
+                placeholder="请选择学院专业(可多选)"
+                @change="changeMajor"
+            />
+        </el-form-item>
+        <!-- 年级 -->
+        <el-form-item label="学生年级">
+            <el-cascader
+                filterable
+                v-model="searchForm.grade"
+                :options="grades"
+                :props="props"
+                placeholder="请选择年级(可多选)"
+                @change="changeGrade"
+            />
+        </el-form-item>
+        <el-form-item>
+            <el-button
+                type="primary"
+                :icon="Search"
+                @click="search"
+            >
+                搜索
+            </el-button>
+            <el-button
+                :icon="Refresh"
+                @click="resetSearchForm"
+            >
+                重置
+            </el-button>
+        </el-form-item>
+    </el-form>
     <!-- 操作区 -->
     <el-row class="operate">
         <el-col>
@@ -24,97 +92,180 @@
         </el-col>
     </el-row>
 
-    <!-- 表格 -->
-    <el-table
-        ref="tableRef"
-        :data="tableList"
-        style="width: 100%"
-        table-layout="auto"
-        @selection-change="selectionLineChangeHandle"
-    >
-        <el-table-column
-            type="selection"
-            fixed
-        ></el-table-column>
-        <el-table-column
-            prop="number"
-            label="学号"
-            fixed
-        ></el-table-column>
-        <el-table-column
-            prop="name"
-            label="姓名"
-        ></el-table-column>
-        <el-table-column
-            prop="phone_number"
-            label="手机号"
-        ></el-table-column>
-        <el-table-column
-            prop="email"
-            label="邮箱"
-        ></el-table-column>
-        <el-table-column
-            prop="academy"
-            label="学院"
-            wi
-        ></el-table-column>
-        <el-table-column
-            prop="major"
-            label="专业"
-        ></el-table-column>
-        <el-table-column
-            prop="grade"
-            label="年级"
-        ></el-table-column>
-        <el-table-column label="培训情况">
-            <template #default="scope">
-                {{ trueTrained(scope.row.trained) }}
-            </template>
-        </el-table-column>
-        <el-table-column
-            prop="train_teacher"
-            label="培训老师"
-        ></el-table-column>
-        <!-- 操作 -->
-        <el-table-column
-            label="操作"
-            width="250"
-            fixed="right"
+    <el-card>
+        <template #header>
+            <div class="card-header">
+                <span>学生列表</span>
+                <el-tooltip
+                    :show-after="200"
+                    :hide-after="0"
+                    class="box-item"
+                    effect="dark"
+                    content="刷新列表"
+                    placement="top"
+                >
+                    <el-button
+                        circle
+                        :icon="Refresh"
+                        @click="refresh()"
+                    ></el-button>
+                </el-tooltip>
+            </div>
+        </template>
+        <!-- 表格 -->
+        <el-table
+            ref="tableRef"
+            :data="tableList"
+            style="width: 100%"
+            table-layout="fixed"
+            @selection-change="selectionLineChangeHandle"
+            border
         >
-            <template #default="scope">
-                <!-- 编辑按钮 -->
-                <el-button
-                    type="primary"
-                    size="small"
-                    link
-                    :icon="Edit"
-                    @click="showEditDialog(scope.row)"
-                >
-                    编辑
-                </el-button>
-                <!-- 删除按钮 -->
-                <el-popconfirm
-                    width="220"
-                    confirm-button-text="确认"
-                    cancel-button-text="取消"
-                    title="确认删除此学生?"
-                    @confirm="deleteConfirm(scope.row)"
-                >
-                    <template #reference>
-                        <el-button
-                            type="primary"
-                            size="small"
-                            link
-                            :icon="Delete"
-                            @click="loseFocus()"
-                        >
-                            删除
-                        </el-button>
-                    </template>
-                </el-popconfirm>
-            </template>
-        </el-table-column>
-    </el-table>
+            <el-table-column
+                type="selection"
+                fixed
+            ></el-table-column>
+            <el-table-column
+                type="index"
+                label="序号"
+                width="60"
+                fixed
+            ></el-table-column>
+            <el-table-column
+                sortable
+                prop="number"
+                label="学号"
+                width="130"
+                fixed
+            ></el-table-column>
+            <el-table-column
+                prop="name"
+                label="姓名"
+                width="100"
+            ></el-table-column>
+            <el-table-column label="手机号">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.phone_number"
+                        placement="top"
+                    >
+                        {{ scope.row.phone_number }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="邮箱">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.email"
+                        placement="top"
+                    >
+                        {{ scope.row.email }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="学院">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.academy"
+                        placement="top"
+                    >
+                        {{ scope.row.academy }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="专业">
+                <template #default="scope">
+                    <el-tooltip
+                        :show-after="200"
+                        :hide-after="0"
+                        class="box-item"
+                        effect="dark"
+                        :content="scope.row.major"
+                        placement="top"
+                    >
+                        {{ scope.row.major }}
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column
+                sortable
+                prop="grade"
+                label="年级"
+            ></el-table-column>
+            <el-table-column label="培训情况">
+                <template #default="scope">
+                    {{ trueTrained(scope.row.trained) }}
+                </template>
+            </el-table-column>
+            <el-table-column
+                prop="train_teacher"
+                label="培训老师"
+            ></el-table-column>
+            <!-- 操作 -->
+            <el-table-column
+                label="操作"
+                width="130"
+                fixed="right"
+            >
+                <template #default="scope">
+                    <!-- 编辑按钮 -->
+                    <el-button
+                        type="primary"
+                        size="small"
+                        link
+                        :icon="Edit"
+                        @click="showEditDialog(scope.row)"
+                    >
+                        编辑
+                    </el-button>
+                    <!-- 删除按钮 -->
+                    <el-popconfirm
+                        width="220"
+                        confirm-button-text="确认"
+                        cancel-button-text="取消"
+                        title="确认删除此学生?"
+                        @confirm="deleteConfirm(scope.row)"
+                    >
+                        <template #reference>
+                            <el-button
+                                type="primary"
+                                size="small"
+                                link
+                                :icon="Delete"
+                                @click="loseFocus()"
+                            >
+                                删除
+                            </el-button>
+                        </template>
+                    </el-popconfirm>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-card>
+
+    <!-- 分页 -->
+    <el-pagination
+        v-if="listLength"
+        v-model:current-page="searchForm.currentPage"
+        v-model:page-size="searchForm.pageSize"
+        :page-sizes="[5, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="listLength"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    />
 
     <!-- 添加学生对话框 -->
     <AddStudent
@@ -133,8 +284,8 @@
 <script setup>
     import { useRoute } from 'vue-router'
     import { useStore } from 'vuex'
-    import { ref, reactive, onMounted } from 'vue'
-    import { Edit, Delete, Plus } from '@element-plus/icons-vue'
+    import { ref, reactive, onMounted, toRaw } from 'vue'
+    import { Edit, Delete, Plus, Refresh, Search } from '@element-plus/icons-vue'
     import AddStudent from '@/components/Student/AddStudent.vue'
     import EditStudent from '@/components/Student/EditStudent.vue'
     import loseFocus from '@/util/loseFocus'
@@ -147,18 +298,107 @@
     store.commit('changeBreadCrumb', zhNames)
     //#endregion
 
+    //#region
+    // 筛选搜索
+    const searchFormRef = ref()
+    const searchForm = reactive({
+        name: '',
+        major: [],
+        grade: [],
+        trained: '',
+        pageSize: 5,
+        currentPage: 1,
+    })
+    const initSearchForm = JSON.parse(JSON.stringify(toRaw(searchForm)))
+    const majors = reactive([])
+    const grades = reactive([])
+    const traineds = [
+        {
+            value: 0,
+            label: '未培训',
+        },
+        {
+            value: 1,
+            label: '培训中',
+        },
+        {
+            value: 2,
+            label: '已培训',
+        },
+    ]
+    const props = {
+        expandTrigger: 'hover',
+        multiple: true,
+    }
+
+    // 改变专业
+    const changeMajor = value => {
+        searchForm.major = value.filter(subArr => subArr.length > 0).map(subArr => subArr[subArr.length - 1])
+    }
+    // 改变年级
+    const changeGrade = value => {
+        searchForm.grade = value.filter(subArr => subArr.length > 0).map(subArr => subArr[subArr.length - 1])
+    }
+    // 搜索
+    const search = () => {
+        loseFocus()
+        getLength()
+        getTableList()
+    }
+    // 重置
+    const resetSearchForm = () => {
+        loseFocus()
+        Object.assign(searchForm, initSearchForm)
+        getLength()
+        getTableList()
+    }
+
+    // 分页
+    const handleSizeChange = val => {
+        getLength()
+        getTableList()
+    }
+    const handleCurrentChange = val => {
+        getLength()
+        getTableList()
+    }
+    // 获取长度
+    const listLength = ref()
+
+    //#endregion
+
     // 获取列表
     const getTableList = async () => {
-        const res = await axios.get('/admin/student/list')
+        const res = await axios.post('/admin/student/list', searchForm)
         tableList.splice(0, tableList.length, ...res.data.data)
         // console.log(tableList)
+    }
+    // 获取列表长度
+    const getLength = async () => {
+        const res = await axios.post('/admin/student/listLength', searchForm)
+        listLength.value = res.data.data
+    }
+    // 获取专业和年级
+    const getMajors = async () => {
+        const res = await axios.get('/admin/student/major')
+        Object.assign(majors, res.data.data.majors)
+        Object.assign(grades, res.data.data.grades)
     }
     // 表格数据
     const tableList = reactive([])
     // 获取列表
     onMounted(() => {
+        getLength()
         getTableList()
+        getMajors()
     })
+
+    // 刷新
+    const refresh = () => {
+        loseFocus()
+        getTableList()
+    }
+
     // 是否培训
     const trueTrained = item => {
         const cateArr = ['未培训', '培训中', '已培训']
@@ -255,9 +495,32 @@
         display: flex;
         flex-wrap: nowrap;
     }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
     // 表格不能换行
     :deep(.cell) {
         white-space: nowrap;
         text-overflow: ellipsis;
+    }
+    :deep(.el-cascader) {
+        width: 100%;
+    }
+    :deep(.el-form-item) {
+        width: 49%;
+        margin-right: 10px !important;
+    }
+    :deep(.el-form-item__content) {
+        width: 100%;
+        // padding-left: 80px;
+    }
+    :deep(.el-select),
+    :deep(.el-input_inner) {
+        width: 100%;
+    }
+    .el-pagination {
+        margin-top: 15px;
     }
 </style>

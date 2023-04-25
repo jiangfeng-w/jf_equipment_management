@@ -9,6 +9,7 @@
                 :rules="loginRules"
                 label-width="0"
                 class="loginForm"
+                @keyup.enter="submitForm()"
             >
                 <!-- 用户名 -->
                 <el-form-item prop="number">
@@ -16,7 +17,6 @@
                         v-model.number="loginForm.number"
                         :prefix-icon="User"
                         placeholder="请输入学工号"
-                        @keyup.enter="submitForm()"
                     />
                 </el-form-item>
                 <!-- 密码 -->
@@ -27,7 +27,6 @@
                         :prefix-icon="Lock"
                         placeholder="请输入密码"
                         show-password
-                        @keyup.enter="submitForm()"
                     />
                 </el-form-item>
                 <!-- 选择角色 -->

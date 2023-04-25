@@ -4,12 +4,16 @@
         width="45%"
         class="addDialog"
         @closed="closeDialog()"
+        align-center
+        draggable
+        destroy-on-close
     >
         <el-form
             :inline="true"
             :model="addForm"
             ref="addFormRef"
             :rules="addFormRules"
+            @keyup.enter="submitConfirm()"
         >
             <!-- 学号 -->
             <el-form-item
@@ -50,6 +54,7 @@
                 prop="grade"
             >
                 <el-cascader
+                    filterable
                     v-model="addForm.grade"
                     :options="grades"
                     :props="props"
@@ -64,6 +69,7 @@
                 class="major"
             >
                 <el-cascader
+                    filterable
                     v-model="addForm.major"
                     :options="majors"
                     :props="props"
@@ -191,6 +197,52 @@
             ],
         },
         {
+            value: '油气藏地质及开发工程学院',
+            label: '油气藏地质及开发工程学院',
+            children: [
+                {
+                    value: '油气藏工程技术',
+                    label: '油气藏工程技术',
+                },
+                {
+                    value: '勘查技术与工程',
+                    label: '勘查技术与工程',
+                },
+                {
+                    value: '石油工程',
+                    label: '石油工程',
+                },
+                {
+                    value: '地球物理学',
+                    label: '地球物理学',
+                },
+                {
+                    value: '地质学',
+                    label: '地质学',
+                },
+                {
+                    value: '测井技术与应用',
+                    label: '测井技术与应用',
+                },
+                {
+                    value: '石油化学',
+                    label: '石油化学',
+                },
+                {
+                    value: '油气田开发与管理',
+                    label: '油气田开发与管理',
+                },
+                {
+                    value: '钻井工程',
+                    label: '钻井工程',
+                },
+                {
+                    value: '油气藏数值模拟',
+                    label: '油气藏数值模拟',
+                },
+            ],
+        },
+        {
             value: '石油与天然气工程学院',
             label: '石油与天然气工程学院',
             children: [
@@ -199,16 +251,87 @@
                     label: '石油工程',
                 },
                 {
+                    value: '石油钻采工程',
+                    label: '石油钻采工程',
+                },
+                {
+                    value: '油气井工程',
+                    label: '油气井工程',
+                },
+                {
                     value: '油气储运工程',
                     label: '油气储运工程',
                 },
                 {
-                    value: '海洋油气工程',
-                    label: '海洋油气工程',
+                    value: '采油工程',
+                    label: '采油工程',
                 },
                 {
-                    value: '化学工程与工艺',
-                    label: '化学工程与工艺',
+                    value: '油气田开发与管理',
+                    label: '油气田开发与管理',
+                },
+                {
+                    value: '钻井工程',
+                    label: '钻井工程',
+                },
+                {
+                    value: '油气田设施工程',
+                    label: '油气田设施工程',
+                },
+                {
+                    value: '地质工程',
+                    label: '地质工程',
+                },
+                {
+                    value: '新能源科学与工程',
+                    label: '新能源科学与工程',
+                },
+            ],
+        },
+        {
+            value: '机械工程学院',
+            label: '机械工程学院',
+            children: [
+                {
+                    value: '机械设计制造及其自动化',
+                    label: '机械设计制造及其自动化',
+                },
+                {
+                    value: '车辆工程',
+                    label: '车辆工程',
+                },
+                {
+                    value: '材料成型及控制工程',
+                    label: '材料成型及控制工程',
+                },
+                {
+                    value: '工业设计',
+                    label: '工业设计',
+                },
+                {
+                    value: '测控技术与仪器',
+                    label: '测控技术与仪器',
+                },
+                {
+                    value: '光电信息科学与工程',
+                    label: '光电信息科学与工程',
+                },
+                {
+                    value: '工程力学',
+                    label: '工程力学',
+                },
+                {
+                    value: '过程装备与控制工程',
+                    label: '过程装备与控制工程',
+                },
+
+                {
+                    value: '热能与动力工程',
+                    label: '热能与动力工程',
+                },
+                {
+                    value: '工程热物理',
+                    label: '工程热物理',
                 },
                 {
                     value: '新能源科学与工程',

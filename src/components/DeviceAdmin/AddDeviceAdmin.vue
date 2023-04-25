@@ -4,12 +4,16 @@
         width="45%"
         class="addDialog"
         @closed="closeDialog()"
+        align-center
+        draggable
+        destroy-on-close
     >
         <el-form
             :inline="true"
             :model="addForm"
             ref="addFormRef"
             :rules="addFormRules"
+            @keyup.enter="addConfirm()"
         >
             <!-- 学工号 -->
             <el-form-item

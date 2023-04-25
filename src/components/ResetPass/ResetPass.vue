@@ -4,6 +4,9 @@
         width="35%"
         @open="fillInInfo()"
         @closed="closeDialog()"
+        align-center
+        draggable
+        destroy-on-close
     >
         <el-form
             ref="resetPassFormRef"

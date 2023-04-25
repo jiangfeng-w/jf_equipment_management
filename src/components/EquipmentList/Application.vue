@@ -5,6 +5,9 @@
         class="addDialog"
         @open="assignData()"
         @closed="closeDialog()"
+        align-center
+        draggable
+        destroy-on-close
     >
         <div class="container">
             <div class="content">
@@ -17,6 +20,7 @@
                         ref="formDataRef"
                         :model="formData"
                         :rules="formDataRules"
+                        @keyup.enter="submitConfirm()"
                     >
                         <el-form-item label="设备名称">
                             <el-input

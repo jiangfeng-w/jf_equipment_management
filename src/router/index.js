@@ -193,6 +193,7 @@ router.beforeEach(async (to, from, next) => {
                     }
                 }
             } catch (error) {
+                ElMessage.error('身份验证过期，请重新登录')
                 next('/login')
             }
         }

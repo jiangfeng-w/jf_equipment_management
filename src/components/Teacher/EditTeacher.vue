@@ -4,6 +4,9 @@
         width="45%"
         @open="getTeacherInfo()"
         @closed="closeDialog()"
+        align-center
+        draggable
+        destroy-on-close
     >
         <el-form
             :inline="true"
@@ -11,6 +14,7 @@
             :model="editForm"
             ref="editFormRef"
             :rules="editFormRules"
+            @keyup.enter="editConfirm()"
         >
             <!-- 学工号 -->
             <el-form-item

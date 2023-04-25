@@ -69,6 +69,7 @@
                             :rules="userFormFules"
                             label-width="80px"
                             class="demo-ruleForm"
+                            @keyup.enter="submitForm()"
                         >
                             <!-- 手机号 -->
                             <el-form-item
@@ -129,6 +130,7 @@
                             :rules="userPasswordFules"
                             label-width="80px"
                             class="demo-ruleForm"
+                            @keyup.enter="submitPass()"
                         >
                             <!-- 旧密码 -->
                             <el-form-item
