@@ -1,6 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store/index'
 import axios from 'axios'
+// 顶上的进度条
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const routes = [
     {
@@ -163,10 +166,10 @@ const router = createRouter({
     routes,
 })
 
-// 实例化 store
-// const store = useStore()
-
+// 路由守卫
 router.beforeEach(async (to, from, next) => {
+    // 打开进度条
+    NProgress.start()
     // 跳转到登录
     if (to.path === '/login') {
         next()
@@ -198,6 +201,11 @@ router.beforeEach(async (to, from, next) => {
             }
         }
     }
+})
+
+router.afterEach((to, from, next) => {
+    // 关闭进度条
+    NProgress.done()
 })
 
 export default router
