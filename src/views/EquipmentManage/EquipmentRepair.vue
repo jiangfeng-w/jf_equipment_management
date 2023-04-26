@@ -3,6 +3,20 @@
         <template #header>
             <div class="card-header">
                 <span>设备维修</span>
+                <el-tooltip
+                    :show-after="200"
+                    :hide-after="0"
+                    class="box-item"
+                    effect="dark"
+                    content="刷新列表"
+                    placement="top"
+                >
+                    <el-button
+                        circle
+                        :icon="Refresh"
+                        @click="getTableList()"
+                    ></el-button>
+                </el-tooltip>
             </div>
         </template>
         <!-- 表格 -->
@@ -169,7 +183,7 @@
     import { ref, reactive, onMounted } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import { useStore } from 'vuex'
-    import { Delete, Plus, Edit, Setting, Check, Close } from '@element-plus/icons-vue'
+    import { Delete, Plus, Edit, Setting, Check, Close, Refresh } from '@element-plus/icons-vue'
     import dayjs from 'dayjs'
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
@@ -252,5 +266,10 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>
