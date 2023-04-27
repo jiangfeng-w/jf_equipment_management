@@ -700,7 +700,7 @@
     }
     // 格式化时间
     const formatTime = timeStamp => {
-        const formattedTime = dayjs(timeStamp).format('YYYY-MM-DD')
+        const formattedTime = dayjs(Number(timeStamp)).format('YYYY-MM-DD')
         return formattedTime
     }
 
