@@ -4,6 +4,8 @@ import axios from 'axios'
 // 顶上的进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+// 配置
+NProgress.configure({ showSpinner: false }) // 去掉右边的旋转加载提示
 
 const routes = [
     {
