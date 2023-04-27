@@ -47,7 +47,6 @@
                 v-model="addEquipmentForm.buy_time"
                 type="date"
                 placeholder="请选择购置日期"
-                @change="formatTimeStamp"
             ></el-date-picker>
         </el-form-item>
         <!-- 设备型号 -->
@@ -497,10 +496,6 @@
 
     //#endregion
 
-    //#region 选择时间
-    const formatTimeStamp = value => {
-        editEquipmentForm.buy_time = dayjs(value).valueOf()
-    }
     //#endregion
 
     // 选择图片
