@@ -63,9 +63,7 @@
                     style="width: 80%"
                     v-model="resetPass.authCode"
                     placeholder="请输入验证码"
-                >
-                    <el-button>你伽马</el-button>
-                </el-input>
+                ></el-input>
                 <el-button
                     type="primary"
                     class="sendEmail"
