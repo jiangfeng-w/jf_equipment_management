@@ -11,10 +11,6 @@
     >
         <div class="container">
             <div class="content">
-                <!-- 图片 -->
-                <!-- <div class="image">
-                    <img :src="applicationEquip.pic" />
-                </div> -->
                 <div class="form">
                     <el-form
                         ref="formDataRef"
