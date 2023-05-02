@@ -91,6 +91,7 @@
             </el-table-column>
             <!-- 操作 -->
             <el-table-column
+                v-if="store.state.userInfo.role === 2"
                 label="操作"
                 width="180"
                 fixed="right"
@@ -98,14 +99,16 @@
                 <template #default="scope">
                     <!-- 同意申请 -->
                     <el-popconfirm
+                        v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                         width="160"
                         confirm-button-text="是"
                         cancel-button-text="否"
                         title="确认同意申请吗？"
-                        @confirm="agree(scope.row.id)"
+                        @confirm="agree(scope.row)"
                     >
                         <template #reference>
                             <el-button
+                                v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                                 type="primary"
                                 size="small"
                                 link
@@ -118,6 +121,7 @@
                     </el-popconfirm>
                     <!-- 拒绝申请 -->
                     <el-popconfirm
+                        v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                         width="160"
                         confirm-button-text="是"
                         cancel-button-text="否"
@@ -126,6 +130,7 @@
                     >
                         <template #reference>
                             <el-button
+                                v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                                 type="primary"
                                 size="small"
                                 link
@@ -136,6 +141,16 @@
                             </el-button>
                         </template>
                     </el-popconfirm>
+                    <!-- 无需操作 -->
+                    <el-button
+                        v-if="scope.row.state !== 0 || scope.row.book_date < dayjs().startOf('day').valueOf()"
+                        type="primary"
+                        size="small"
+                        link
+                        @click="loseFocus()"
+                    >
+                        {{ getState(scope.row) }},无需操作
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -199,32 +214,32 @@
 
     //#region 操作
     // 同意申请
-    const agree = async id => {
-        console.log(id)
-        // try {
-        //     const res = await axios.post('/admin/book/agree', { id })
-        //     if (res.status === 201) {
-        //         ElMessage.success(res.data.message)
-        //         getTableList()
-        //     }
-        // } catch (error) {
-        //     ElMessage.error(error.response.data.error)
-        //     getTableList()
-        // }
+    const agree = async data => {
+        // console.log(data.id, data.equip_id)
+        try {
+            const res = await axios.post('/admin/book/agree', { id: data.id, equip_id: data.equip_id })
+            if (res.status === 201) {
+                ElMessage.success(res.data.message)
+                getTableList()
+            }
+        } catch (error) {
+            ElMessage.error(error.response.data.error)
+            getTableList()
+        }
     }
     // 拒绝申请
     const refuse = async id => {
-        console.log(id)
-        // try {
-        //     const res = await axios.post('/admin/book/refuse', { id })
-        //     if (res.status === 201) {
-        //         ElMessage.success(res.data.message)
-        //         getTableList()
-        //     }
-        // } catch (error) {
-        //     ElMessage.error(error.response.data.error)
-        //     getTableList()
-        // }
+        // console.log(id)
+        try {
+            const res = await axios.post('/admin/book/refuse', { id })
+            if (res.status === 201) {
+                ElMessage.success(res.data.message)
+                getTableList()
+            }
+        } catch (error) {
+            ElMessage.error(error.response.data.error)
+            getTableList()
+        }
     }
     //#endregion
 </script>
