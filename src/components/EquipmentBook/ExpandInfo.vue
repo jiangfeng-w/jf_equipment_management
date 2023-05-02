@@ -76,17 +76,11 @@
     }
     // 获取设备状态
     const getType = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
-            return 'info'
-        }
-        const colors = ['warning', 'danger', 'success', '']
+        const colors = ['warning', 'danger', 'success', '', 'info']
         return colors[data.state]
     }
     const getState = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
-            return '已过期'
-        }
-        const states = ['待审核', '未通过', '已通过', '已归还']
+        const states = ['待审核', '已拒绝', '已同意', '已归还', '已过期']
         return states[data.state]
     }
 

@@ -38,13 +38,16 @@
                     <ExpandInfo :info="scope.row"></ExpandInfo>
                 </template>
             </el-table-column>
-            <!-- 序号列 -->
+            <!-- 预约编号 -->
             <el-table-column
-                type="index"
-                label="序号"
-                width="60"
+                label="预约编号"
+                width="100"
                 fixed
-            ></el-table-column>
+            >
+                <template #default="scope">
+                    {{ scope.row.id }}
+                </template>
+            </el-table-column>
             <!-- 设备名称 -->
             <el-table-column
                 prop="name"
@@ -99,7 +102,6 @@
                 <template #default="scope">
                     <!-- 同意申请 -->
                     <el-popconfirm
-                        v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                         width="160"
                         confirm-button-text="是"
                         cancel-button-text="否"
@@ -108,7 +110,6 @@
                     >
                         <template #reference>
                             <el-button
-                                v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
                                 type="primary"
                                 size="small"
                                 link
@@ -120,41 +121,27 @@
                         </template>
                     </el-popconfirm>
                     <!-- 拒绝申请 -->
-                    <el-popconfirm
-                        v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
-                        width="160"
-                        confirm-button-text="是"
-                        cancel-button-text="否"
-                        title="确认拒绝申请吗？"
-                        @confirm="refuse(scope.row.id)"
-                    >
-                        <template #reference>
-                            <el-button
-                                v-if="scope.row.state === 0 && scope.row.book_date > dayjs().startOf('day').valueOf()"
-                                type="primary"
-                                size="small"
-                                link
-                                :icon="Close"
-                                @click="loseFocus()"
-                            >
-                                拒绝申请
-                            </el-button>
-                        </template>
-                    </el-popconfirm>
-                    <!-- 无需操作 -->
                     <el-button
-                        v-if="scope.row.state !== 0 || scope.row.book_date < dayjs().startOf('day').valueOf()"
                         type="primary"
                         size="small"
                         link
-                        @click="loseFocus()"
+                        :icon="Close"
+                        @click="refuse(scope.row)"
                     >
-                        {{ getState(scope.row) }},无需操作
+                        拒绝申请
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
     </el-card>
+
+    <!-- 拒绝申请对话框 -->
+    <RefuseBook
+        v-model="applicationDialog"
+        :applicationBook="applicationBook"
+        @closeDialog="closeDialog"
+        @getTableList="getTableList"
+    ></RefuseBook>
 </template>
 <script setup>
     import { ref, reactive, onMounted } from 'vue'
@@ -165,15 +152,22 @@
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
     import ExpandInfo from '@/components/EquipmentBook/ExpandInfo.vue'
+    import RefuseBook from '@/components/EquipmentBook/RefuseBook.vue'
 
+    //#region 面包屑导航数据
+    const route = useRoute()
     const store = useStore()
+    const zhNames = route.meta.zh_name
+    store.commit('changeBreadCrumb', zhNames)
+    //#endregion
+
     // 获取预约列表
     const getTableList = async () => {
         let res
         if (store.state.userInfo.role === 1) {
-            res = await axios.get('/admin/equipment/getBookList')
+            res = await axios.post('/admin/equipment/getBookList')
         } else {
-            res = await axios.get(`/admin/equipment/getBookList/${store.state.userInfo.number}`)
+            res = await axios.post(`/admin/equipment/getBookList/${store.state.userInfo.number}`)
         }
 
         // console.log(res.data.data)
@@ -198,48 +192,53 @@
     }
     // 获取设备状态
     const getType = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
-            return 'info'
-        }
-        const colors = ['warning', 'danger', 'success', '']
+        const colors = ['warning', 'danger', 'success', '', 'info']
         return colors[data.state]
     }
     const getState = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
-            return '已过期'
-        }
-        const states = ['待审核', '未通过', '已通过', '已归还']
+        const states = ['待审核', '已拒绝', '已同意', '已归还', '已过期']
         return states[data.state]
     }
 
     //#region 操作
     // 同意申请
     const agree = async data => {
-        // console.log(data.id, data.equip_id)
-        try {
-            const res = await axios.post('/admin/book/agree', { id: data.id, equip_id: data.equip_id })
-            if (res.status === 201) {
-                ElMessage.success(res.data.message)
+        if (data.state === 0) {
+            try {
+                const res = await axios.post('/admin/book/agree', { id: data.id, equip_id: data.equip_id })
+                if (res.status === 201) {
+                    ElMessage.success(res.data.message)
+                    getTableList()
+                }
+            } catch (error) {
+                ElMessage.error(error.response.data.error)
                 getTableList()
             }
-        } catch (error) {
-            ElMessage.error(error.response.data.error)
-            getTableList()
+        } else if (data.state === 4) {
+            ElMessage.warning('此申请已过期')
+        } else {
+            ElMessage.warning('您已处理此申请')
         }
     }
     // 拒绝申请
-    const refuse = async id => {
-        // console.log(id)
-        try {
-            const res = await axios.post('/admin/book/refuse', { id })
-            if (res.status === 201) {
-                ElMessage.success(res.data.message)
-                getTableList()
-            }
-        } catch (error) {
-            ElMessage.error(error.response.data.error)
-            getTableList()
+    // 对话框
+    const applicationDialog = ref(false)
+    const applicationBook = ref()
+    const refuse = async data => {
+        // console.log(data)
+        loseFocus()
+        if (data.state === 0) {
+            applicationBook.value = data
+            applicationDialog.value = true
+        } else if (data.state === 4) {
+            ElMessage.warning('此申请已过期')
+        } else {
+            ElMessage.warning('您已处理此申请')
         }
+    }
+    // 关闭对话框
+    const closeDialog = () => {
+        applicationDialog.value = false
     }
     //#endregion
 </script>
