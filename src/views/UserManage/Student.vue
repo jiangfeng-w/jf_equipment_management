@@ -401,6 +401,7 @@
     // 刷新
     const refresh = () => {
         loseFocus()
+        getLength()
         getTableList()
     }
 
