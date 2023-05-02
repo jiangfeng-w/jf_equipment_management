@@ -47,9 +47,8 @@
                     <span class="info-key">申请状态：</span>
                     <span class="info-value">
                         <el-tag
-                            type="warning"
-                            :effect="getEffect(info)"
-                            :hit="true"
+                            :type="getType(info)"
+                            effect="dark"
                         >
                             {{ getState(info) }}
                         </el-tag>
@@ -75,12 +74,19 @@
         const effects = ['light', 'plain', 'dark']
         return effects[state]
     }
-    // 计算状态
+    // 获取设备状态
+    const getType = data => {
+        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
+            return 'info'
+        }
+        const colors = ['warning', 'danger', 'success', '']
+        return colors[data.state]
+    }
     const getState = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf()) {
+        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
             return '已过期'
         }
-        const states = ['待审核', '未通过', '已通过']
+        const states = ['待审核', '未通过', '已通过', '已归还']
         return states[data.state]
     }
 

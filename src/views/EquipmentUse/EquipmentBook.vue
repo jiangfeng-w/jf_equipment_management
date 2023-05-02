@@ -81,7 +81,12 @@
                 width="100"
             >
                 <template #default="scope">
-                    {{ getState(scope.row) }}
+                    <el-tag
+                        :type="getType(scope.row)"
+                        effect="dark"
+                    >
+                        {{ getState(scope.row) }}
+                    </el-tag>
                 </template>
             </el-table-column>
             <!-- 操作 -->
@@ -176,14 +181,52 @@
         const formattedDate = dayjs(timeStamp).format('YYYY-MM-DD')
         return formattedDate
     }
-    // 计算状态
+    // 获取设备状态
+    const getType = data => {
+        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
+            return 'info'
+        }
+        const colors = ['warning', 'danger', 'success', '']
+        return colors[data.state]
+    }
     const getState = data => {
-        if (data.book_date < dayjs().startOf('day').valueOf()) {
+        if (data.book_date < dayjs().startOf('day').valueOf() && data.state === 0) {
             return '已过期'
         }
-        const states = ['待审核', '未通过', '已通过']
+        const states = ['待审核', '未通过', '已通过', '已归还']
         return states[data.state]
     }
+
+    //#region 操作
+    // 同意申请
+    const agree = async id => {
+        console.log(id)
+        // try {
+        //     const res = await axios.post('/admin/book/agree', { id })
+        //     if (res.status === 201) {
+        //         ElMessage.success(res.data.message)
+        //         getTableList()
+        //     }
+        // } catch (error) {
+        //     ElMessage.error(error.response.data.error)
+        //     getTableList()
+        // }
+    }
+    // 拒绝申请
+    const refuse = async id => {
+        console.log(id)
+        // try {
+        //     const res = await axios.post('/admin/book/refuse', { id })
+        //     if (res.status === 201) {
+        //         ElMessage.success(res.data.message)
+        //         getTableList()
+        //     }
+        // } catch (error) {
+        //     ElMessage.error(error.response.data.error)
+        //     getTableList()
+        // }
+    }
+    //#endregion
 </script>
 <style lang="scss" scoped>
     :deep(.el-table__cell .cell) {
