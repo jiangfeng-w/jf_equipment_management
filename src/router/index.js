@@ -159,6 +159,22 @@ const routes = [
                     },
                 ],
             },
+            // 设备使用
+            {
+                path: '/equipmentuse',
+                name: 'equipmentuse',
+                children: [
+                    // 设备预约列表
+                    {
+                        path: '/equipmentuse/equipmentbook',
+                        name: 'equipmentbook',
+                        meta: {
+                            zh_name: ['设备使用', '设备预约'],
+                        },
+                        component: () => import('@/views/EquipmentUse/EquipmentBook.vue'),
+                    },
+                ],
+            },
         ],
     },
 ]

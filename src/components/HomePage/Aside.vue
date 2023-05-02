@@ -51,7 +51,7 @@
             <!-- 设备管理 -->
             <el-sub-menu index="/equipment">
                 <template #title>
-                    <el-icon><UserFilled /></el-icon>
+                    <el-icon><Management /></el-icon>
                     <span v-show="!store.state.isCollapse">设备管理</span>
                 </template>
                 <!-- 设备列表 -->
@@ -92,11 +92,23 @@
                     <span v-show="!store.state.isCollapse">报废审批</span>
                 </el-menu-item>
             </el-sub-menu>
+            <!-- 设备使用 -->
+            <el-sub-menu index="/equipmentuse">
+                <template #title>
+                    <el-icon><TrendCharts /></el-icon>
+                    <span v-show="!store.state.isCollapse">设备使用</span>
+                </template>
+                <!-- 设备列表 -->
+                <el-menu-item index="/equipmentuse/equipmentbook">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">设备预约</span>
+                </el-menu-item>
+            </el-sub-menu>
         </el-menu>
     </el-aside>
 </template>
 <script setup>
-    import { HomeFilled, Avatar, UserFilled, TrendCharts, GoodsFilled, Menu, Pointer } from '@element-plus/icons-vue'
+    import { HomeFilled, Management, UserFilled, TrendCharts, Menu } from '@element-plus/icons-vue'
     import { useRoute, useRouter } from 'vue-router'
     import { useStore } from 'vuex'
 
