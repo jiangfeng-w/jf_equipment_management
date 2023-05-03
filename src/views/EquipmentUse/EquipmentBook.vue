@@ -192,11 +192,11 @@
     }
     // 获取设备状态
     const getType = data => {
-        const colors = ['warning', 'danger', 'success', '', 'info']
+        const colors = ['warning', 'success', 'danger', '', 'info', 'info']
         return colors[data.state]
     }
     const getState = data => {
-        const states = ['待审核', '已拒绝', '已同意', '已归还', '已过期']
+        const states = ['待审核', '已同意', '已拒绝', '已归还', '已过期', '已取消']
         return states[data.state]
     }
 
@@ -216,6 +216,8 @@
             }
         } else if (data.state === 4) {
             ElMessage.warning('此申请已过期')
+        } else if (data.state === 5) {
+            ElMessage.warning('此申请已取消')
         } else {
             ElMessage.warning('您已处理此申请')
         }
@@ -232,6 +234,8 @@
             applicationDialog.value = true
         } else if (data.state === 4) {
             ElMessage.warning('此申请已过期')
+        } else if (data.state === 5) {
+            ElMessage.warning('此申请已取消')
         } else {
             ElMessage.warning('您已处理此申请')
         }

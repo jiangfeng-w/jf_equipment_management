@@ -76,11 +76,11 @@
     }
     // 获取设备状态
     const getType = data => {
-        const colors = ['warning', 'danger', 'success', '', 'info']
+        const colors = ['warning', 'success', 'danger', '', 'info', 'info']
         return colors[data.state]
     }
     const getState = data => {
-        const states = ['待审核', '已拒绝', '已同意', '已归还', '已过期']
+        const states = ['待审核', '已同意', '已拒绝', '已归还', '已过期', '已取消']
         return states[data.state]
     }
 
