@@ -173,6 +173,15 @@ const routes = [
                         },
                         component: () => import('@/views/EquipmentUse/EquipmentBook.vue'),
                     },
+                    // 使用成果列表
+                    {
+                        path: '/equipmentuse/useresults',
+                        name: 'useresults',
+                        meta: {
+                            zh_name: ['设备使用', '设备预约'],
+                        },
+                        component: () => import('@/views/EquipmentUse/UseResults.vue'),
+                    },
                 ],
             },
         ],

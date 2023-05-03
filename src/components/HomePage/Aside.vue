@@ -103,6 +103,11 @@
                     <el-icon><Menu /></el-icon>
                     <span v-show="!store.state.isCollapse">设备预约</span>
                 </el-menu-item>
+                <!-- 成果列表 -->
+                <el-menu-item index="/equipmentuse/useresults">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">产出成果</span>
+                </el-menu-item>
             </el-sub-menu>
         </el-menu>
     </el-aside>
