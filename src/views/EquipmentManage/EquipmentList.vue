@@ -221,9 +221,11 @@
             </el-table-column>
             <!-- 设备名称 -->
             <el-table-column
+                prop="id"
                 label="设备名称"
-                width="200"
+                min-width="300"
                 fixed
+                sortable
             >
                 <template #default="scope">
                     <el-tooltip
@@ -234,14 +236,16 @@
                         :content="scope.row.name"
                         placement="top"
                     >
-                        {{ scope.row.name }}
+                        {{ `(${scope.row.id.toString().padStart(8, '0')}) ${scope.row.name}` }}
                     </el-tooltip>
                 </template>
             </el-table-column>
             <!-- 购置日期 -->
             <el-table-column
+                prop="buy_time"
                 label="购置日期"
                 width="110"
+                sortable
             >
                 <template #default="scope">
                     {{ formatTime(scope.row.buy_time) }}
@@ -298,8 +302,10 @@
             </el-table-column>
             <!-- 状态 -->
             <el-table-column
+                prop="state"
                 label="设备状态"
                 min-width="100"
+                sortable
             >
                 <template #default="scope">
                     <el-tag
@@ -315,7 +321,7 @@
             <!-- 操作 -->
             <el-table-column
                 label="操作"
-                width="280"
+                width="250"
                 fixed="right"
                 v-if="store.state.userInfo.role === 2"
             >
@@ -330,26 +336,55 @@
                     >
                         编辑设备
                     </el-button>
-                    <!-- 维修申请 -->
+                    <!-- 设备培训 -->
                     <el-button
                         type="primary"
                         size="small"
                         link
-                        :icon="Setting"
-                        @click="repair(scope.row)"
+                        :icon="Plus"
+                        @click="addTrainCourse(scope.row.id)"
                     >
-                        维修申请
+                        设备培训
                     </el-button>
-                    <!-- 删除按钮 -->
-                    <el-button
-                        type="primary"
-                        size="small"
-                        link
-                        :icon="Delete"
-                        @click="scrap(scope.row)"
+                    <!-- 更多 -->
+                    <el-popover
+                        placement="bottom-start"
+                        :width="180"
+                        trigger="hover"
                     >
-                        报废申请
-                    </el-button>
+                        <template #reference>
+                            <el-button
+                                type="primary"
+                                size="small"
+                                link
+                                :icon="DArrowRight"
+                                @click="loseFocus"
+                            >
+                                更多
+                            </el-button>
+                        </template>
+
+                        <!-- 维修申请 -->
+                        <el-button
+                            type="primary"
+                            size="small"
+                            link
+                            :icon="Setting"
+                            @click="repair(scope.row)"
+                        >
+                            维修申请
+                        </el-button>
+                        <!-- 删除按钮 -->
+                        <el-button
+                            type="primary"
+                            size="small"
+                            link
+                            :icon="Delete"
+                            @click="scrap(scope.row)"
+                        >
+                            报废申请
+                        </el-button>
+                    </el-popover>
                 </template>
             </el-table-column>
         </el-table>
@@ -382,7 +417,7 @@
     import { ref, reactive, onMounted } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import { useStore } from 'vuex'
-    import { Delete, Plus, Edit, Setting, Search, Refresh } from '@element-plus/icons-vue'
+    import { Delete, Plus, Edit, DArrowRight, Setting, Search, Refresh } from '@element-plus/icons-vue'
     import dayjs from 'dayjs'
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
@@ -718,6 +753,14 @@
         })
     }
 
+    // 设备培训课程
+    const addTrainCourse = id => {
+        router.push({
+            name: 'addtraincourse',
+            params: { id },
+        })
+    }
+
     // 申请对话框
     const applicationDialog = ref(false)
     const applicationEquip = ref()
@@ -732,7 +775,7 @@
             applicationEquip.value = data
             applicationDialog.value = true
         } else {
-            ElMessage.info('该设备目前不可申请维修')
+            ElMessage.warning('该设备目前不可申请维修')
         }
     }
     // 申请报废
@@ -744,12 +787,13 @@
             applicationEquip.value = data
             applicationDialog.value = true
         } else {
-            ElMessage.info('该设备目前不可申请报废')
+            ElMessage.warning('该设备目前不可申请报废')
         }
     }
     // 关闭申请对话框
     const closeDialog = params => {
         applicationDialog.value = false
+        trainDialog.value = false
     }
 </script>
 <style lang="scss" scoped>

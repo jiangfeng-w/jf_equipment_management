@@ -164,6 +164,25 @@ const routes = [
                 path: '/equipmentuse',
                 name: 'equipmentuse',
                 children: [
+                    // 添加培训课程
+                    {
+                        path: '/equipmentuse/addtraincourse/:id',
+                        name: 'addtraincourse',
+                        meta: {
+                            role: 2,
+                            zh_name: ['设备使用', '添加培训课程'],
+                        },
+                        component: () => import('@/views/EquipmentUse/AddTrainCourse.vue'),
+                    },
+                    // 培训课程列表
+                    {
+                        path: '/equipmentuse/traincourses',
+                        name: 'traincourses',
+                        meta: {
+                            zh_name: ['设备使用', '培训课程列表'],
+                        },
+                        component: () => import('@/views/EquipmentUse/TrainCourses.vue'),
+                    },
                     // 设备预约列表
                     {
                         path: '/equipmentuse/equipmentbook',
@@ -178,7 +197,7 @@ const routes = [
                         path: '/equipmentuse/useresults',
                         name: 'useresults',
                         meta: {
-                            zh_name: ['设备使用', '设备预约'],
+                            zh_name: ['设备使用', '产出成果'],
                         },
                         component: () => import('@/views/EquipmentUse/UseResults.vue'),
                     },
