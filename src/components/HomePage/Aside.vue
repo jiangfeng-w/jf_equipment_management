@@ -98,6 +98,11 @@
                     <el-icon><TrendCharts /></el-icon>
                     <span v-show="!store.state.isCollapse">设备使用</span>
                 </template>
+                <!-- 设备培训 -->
+                <el-menu-item index="/equipmentuse/traincourses">
+                    <el-icon><Menu /></el-icon>
+                    <span v-show="!store.state.isCollapse">培训课程</span>
+                </el-menu-item>
                 <!-- 设备列表 -->
                 <el-menu-item index="/equipmentuse/equipmentbook">
                     <el-icon><Menu /></el-icon>

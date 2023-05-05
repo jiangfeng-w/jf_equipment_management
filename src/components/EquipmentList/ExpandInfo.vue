@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="info-container">
-            <div class="name">{{ info.name }}</div>
+            <div class="name">{{ `(${info.id.toString().padStart(8, '0')}) ${info.name}` }}</div>
             <ul>
                 <li class="info-row">
                     <span class="info-key">安置地点：</span>
