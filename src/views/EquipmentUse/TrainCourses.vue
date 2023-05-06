@@ -21,7 +21,6 @@
         </template>
         <!-- 表格 -->
         <el-table
-            ref="tableRef"
             :data="tableList"
             style="width: 100%"
             table-layout="fixed"
@@ -149,15 +148,15 @@
                 fixed="right"
             >
                 <template #default="scope">
-                    <!-- 报名申请 -->
+                    <!-- 报名列表 -->
                     <el-button
                         type="primary"
                         size="small"
                         link
                         :icon="View"
-                        @click="loseFocus"
+                        @click="signUpList(scope.row)"
                     >
-                        报名申请
+                        报名列表
                     </el-button>
                     <!-- 查看成员 -->
                     <el-button
@@ -184,6 +183,14 @@
             </el-table-column>
         </el-table>
     </el-card>
+
+    <!-- 报名列表 -->
+    <SignUpListVue
+        v-model="signUpListDialog"
+        :signUpListEquipID="signUpListEquipID"
+        @closeDialog="closeDialog"
+        @getTableList="getTableList"
+    ></SignUpListVue>
 </template>
 <script setup>
     import { ref, reactive, onMounted } from 'vue'
@@ -194,6 +201,7 @@
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
     import ExpandInfo from '@/components/TrainCourses/ExpandInfo.vue'
+    import SignUpListVue from '@/components/TrainCourses/SignUpList.vue'
 
     //#region 面包屑导航数据
     const route = useRoute()
@@ -233,6 +241,20 @@
     const getState = data => {
         const states = ['报名中', '培训中', '已结束']
         return states[data.state]
+    }
+
+    // 报名对话框
+    const signUpListDialog = ref(false)
+    const signUpListEquipID = ref()
+    const signUpList = data => {
+        signUpListEquipID.value = data.id
+        signUpListDialog.value = true
+    }
+
+    // 关闭申请对话框
+    const closeDialog = () => {
+        signUpListDialog.value = false
+        // trainDialog.value = false
     }
 </script>
 <style lang="scss" scoped>
