@@ -21,13 +21,13 @@
             />
         </el-form-item>
         <!-- 设备分类 -->
-        <el-form-item label="学科分类">
+        <el-form-item label="设备分类">
             <el-select
                 v-model="searchForm.classification"
                 clearable
                 filterable
                 multiple
-                placeholder="请选择学科分类"
+                placeholder="请选择设备分类"
             >
                 <el-option
                     v-for="item in options.classifications"
