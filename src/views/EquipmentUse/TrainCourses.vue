@@ -164,7 +164,7 @@
                         size="small"
                         link
                         :icon="User"
-                        @click="loseFocus"
+                        @click="courseStudents(scope.row)"
                     >
                         课程学员
                     </el-button>
@@ -185,12 +185,22 @@
     </el-card>
 
     <!-- 报名列表 -->
-    <SignUpListVue
+    <SignUpList
         v-model="signUpListDialog"
         :signUpListEquipID="signUpListEquipID"
+        :courseNmae="courseNmae"
         @closeDialog="closeDialog"
         @getTableList="getTableList"
-    ></SignUpListVue>
+    ></SignUpList>
+
+    <!-- 课程学生列表 -->
+    <CourseStudents
+        v-model="courseStudentsDialog"
+        :courseStudentsID="courseStudentsID"
+        :courseNmae="courseNmae"
+        @closeDialog="closeDialog"
+        @getTableList="getTableList"
+    ></CourseStudents>
 </template>
 <script setup>
     import { ref, reactive, onMounted } from 'vue'
@@ -201,7 +211,8 @@
     import axios from 'axios'
     import loseFocus from '@/util/loseFocus'
     import ExpandInfo from '@/components/TrainCourses/ExpandInfo.vue'
-    import SignUpListVue from '@/components/TrainCourses/SignUpList.vue'
+    import SignUpList from '@/components/TrainCourses/SignUpList.vue'
+    import CourseStudents from '@/components/TrainCourses/CourseStudents.vue'
 
     //#region 面包屑导航数据
     const route = useRoute()
@@ -243,18 +254,28 @@
         return states[data.state]
     }
 
-    // 报名对话框
+    // 报名列表对话框
     const signUpListDialog = ref(false)
     const signUpListEquipID = ref()
+    const courseNmae = ref()
     const signUpList = data => {
         signUpListEquipID.value = data.id
+        courseNmae.value = data.project_name
         signUpListDialog.value = true
+    }
+    // 课程学生列表对话框
+    const courseStudentsDialog = ref(false)
+    const courseStudentsID = ref()
+    const courseStudents = data => {
+        courseStudentsID.value = data.id
+        courseNmae.value = data.project_name
+        courseStudentsDialog.value = true
     }
 
     // 关闭申请对话框
     const closeDialog = () => {
         signUpListDialog.value = false
-        // trainDialog.value = false
+        courseStudentsDialog.value = false
     }
 </script>
 <style lang="scss" scoped>

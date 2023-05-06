@@ -1,7 +1,6 @@
 <template>
     <el-dialog
         width="70%"
-        class="addDialog"
         @open="assignData()"
         @closed="closeDialog()"
         align-center
@@ -9,7 +8,7 @@
         destroy-on-close
     >
         <template #header>
-            <span class="header">报名列表</span>
+            <span class="header">课程学生</span>
             <span>{{ ' —— ' + courseNmae }}</span>
         </template>
         <!-- 表格 -->
@@ -24,6 +23,11 @@
                 label="课程编号"
                 prop="course_id"
                 fixed
+            ></el-table-column>
+            <!-- 学生学号 -->
+            <el-table-column
+                label="学生学号"
+                prop="student_number"
             ></el-table-column>
             <!-- 学生姓名 -->
             <el-table-column
@@ -64,31 +68,42 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
-            <!-- 报名时间 -->
+            <!-- 当前状态 -->
             <el-table-column
-                prop="create_time"
-                label="报名时间"
+                label="当前状态"
+                prop="state"
                 sortable
             >
                 <template #default="scope">
-                    {{ formatTime(scope.row.create_time) }}
+                    {{ getState(scope.row) }}
                 </template>
             </el-table-column>
             <!-- 操作 -->
             <el-table-column
                 v-if="store.state.userInfo.role === 2"
                 label="操作"
-                width="180"
+                width="90"
                 fixed="right"
             >
                 <template #default="scope">
-                    <!-- 同意申请 -->
+                    <!-- 已完成培训 -->
+                    <el-button
+                        v-if="scope.row.state === 4"
+                        type="primary"
+                        size="small"
+                        link
+                        @click="loseFocus()"
+                    >
+                        已完成培训
+                    </el-button>
+                    <!-- 完成培训按钮 -->
                     <el-popconfirm
-                        width="160"
+                        v-else
+                        width="245"
                         confirm-button-text="是"
                         cancel-button-text="否"
-                        title="确认同意申请吗？"
-                        @confirm="agree(scope.row)"
+                        :title="completedTitle"
+                        @confirm="completed(scope.row)"
                     >
                         <template #reference>
                             <el-button
@@ -98,27 +113,7 @@
                                 :icon="Check"
                                 @click="loseFocus()"
                             >
-                                同意申请
-                            </el-button>
-                        </template>
-                    </el-popconfirm>
-                    <!-- 拒绝申请 -->
-                    <el-popconfirm
-                        width="160"
-                        confirm-button-text="是"
-                        cancel-button-text="否"
-                        title="确认拒绝申请吗？"
-                        @confirm="refuse(scope.row)"
-                    >
-                        <template #reference>
-                            <el-button
-                                type="primary"
-                                size="small"
-                                link
-                                :icon="Close"
-                                @click="loseFocus()"
-                            >
-                                拒绝申请
+                                完成培训
                             </el-button>
                         </template>
                     </el-popconfirm>
@@ -137,37 +132,41 @@
 
     const store = useStore()
     const props = defineProps({
-        signUpListEquipID: Number,
+        courseStudentsID: Number,
         courseNmae: String,
     })
     // 注册emit
     const emit = defineEmits(['closeDialog', 'getTableList'])
+    // 完成培训按钮的弹出框
+    const completedTitle = ref()
 
+    // 获取课程学生列表
     const assignData = async () => {
-        const res = await axios.get(`/admin/train/signUpList/${props.signUpListEquipID}`)
+        const res = await axios.get(`/admin/train/courseStudents/${props.courseStudentsID}`)
         tableList.splice(0, tableList.length, ...res.data.data)
+        Date.now() > tableList[0].train_end
+            ? (completedTitle.value = '确认此学生已完成全部培训吗？')
+            : (completedTitle.value = '确认提前结束此学生的培训吗？')
         // console.log(tableList)
     }
     // 表格数据
     const tableList = reactive([])
     // 格式化时间
-    const formatTime = timeStamp => {
-        const formattedTime = dayjs(timeStamp).format('YYYY-MM-DD HH:mm:ss')
-        return formattedTime
+    const getState = data => {
+        const states = ['等待培训', '正在培训', '培训完成']
+        return states[data.state - 2]
     }
     // 关闭对话框
     const closeDialog = () => {
         emit('closeDialog')
     }
 
-    //#region 操作
-    // 同意申请
-    const agree = async data => {
+    // 完成培训
+    const completed = async data => {
+        const ids = [data.id]
         // console.log(data)
         try {
-            const res = await axios.post('/admin/train/agree', {
-                id: data.id,
-            })
+            const res = await axios.post('/admin/train/completed', { ids })
             if (res.status === 200) {
                 ElMessage.success(res.data.message)
                 closeDialog()
@@ -178,25 +177,6 @@
             emit('getTableList')
         }
     }
-    // 拒绝申请
-    const refuse = async data => {
-        // console.log(data)
-        try {
-            const res = await axios.post('/admin/train/refuse', {
-                id: data.id,
-                course_id: data.course_id,
-            })
-            if (res.status === 200) {
-                ElMessage.success(res.data.message)
-                closeDialog()
-                emit('getTableList')
-            }
-        } catch (error) {
-            ElMessage.error(error.response.data.error)
-            emit('getTableList')
-        }
-    }
-    //#endregion
 </script>
 <style lang="scss" scoped>
     .header {
