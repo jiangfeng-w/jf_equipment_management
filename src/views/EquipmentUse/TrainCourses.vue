@@ -129,8 +129,10 @@
             </el-table-column>
             <!-- 当前状态 -->
             <el-table-column
+                prop="state"
                 label="当前状态"
-                width="100"
+                width="110"
+                sortable
             >
                 <template #default="scope">
                     <el-tag
@@ -148,16 +150,6 @@
                 fixed="right"
             >
                 <template #default="scope">
-                    <!-- 报名列表 -->
-                    <el-button
-                        type="primary"
-                        size="small"
-                        link
-                        :icon="View"
-                        @click="signUpList(scope.row)"
-                    >
-                        报名列表
-                    </el-button>
                     <!-- 查看成员 -->
                     <el-button
                         type="primary"
@@ -168,16 +160,15 @@
                     >
                         课程学员
                     </el-button>
-                    <!-- 结束课程 -->
+                    <!-- 报名列表 -->
                     <el-button
-                        v-if="scope.row.state === 1"
                         type="primary"
                         size="small"
                         link
-                        :icon="CircleCheck"
-                        @click="loseFocus"
+                        :icon="View"
+                        @click="signUpList(scope.row)"
                     >
-                        结束课程
+                        报名列表
                     </el-button>
                 </template>
             </el-table-column>
@@ -246,11 +237,11 @@
     }
     // 获取设备状态
     const getType = data => {
-        const colors = ['success', '', 'info']
+        const colors = ['success', 'info', '', 'info']
         return colors[data.state]
     }
     const getState = data => {
-        const states = ['报名中', '培训中', '已结束']
+        const states = ['报名中', '报名截止', '培训中', '已结束']
         return states[data.state]
     }
 
