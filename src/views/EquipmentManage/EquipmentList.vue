@@ -9,6 +9,7 @@
         <!-- 设备名称 -->
         <el-form-item label="设备名称">
             <el-input
+                clearable
                 v-model="searchForm.name"
                 placeholder="搜索设备名称"
             />
@@ -16,6 +17,7 @@
         <!-- 功能范围 -->
         <el-form-item label="功能范围">
             <el-input
+                clearable
                 v-model="searchForm.function_range"
                 placeholder="搜索功能范围"
             />
@@ -138,7 +140,7 @@
             />
         </el-form-item>
         <!-- 按钮 -->
-        <el-form-item>
+        <el-form-item class="btn">
             <el-button
                 type="primary"
                 :icon="Search"
@@ -163,7 +165,6 @@
             <el-button
                 type="primary"
                 :icon="Plus"
-                plain
                 @click="goToAdd()"
             >
                 新增
@@ -173,7 +174,6 @@
             <el-button
                 type="danger"
                 :icon="Delete"
-                plain
             >
                 删除
             </el-button>
@@ -467,6 +467,7 @@
         searchForm.price_range = []
         searchForm.buy_time = []
         searchForm.state = []
+        buy_time.value = []
         getLength()
         getTableList()
     }
@@ -826,18 +827,21 @@
         width: 49%;
         margin-right: 10px !important;
     }
-    // 选择最后两个，按钮和时间选择器
-    :deep(.el-form-item:nth-last-child(-n + 2)) {
-        width: 99%;
+    // 选择倒数第二个框
+    :deep(.el-form-item:nth-last-child(2)) {
+        width: 84%;
         margin-right: 10px !important;
     }
     :deep(.el-form-item__content) {
         width: 100%;
-        // padding-left: 80px;
     }
     :deep(.el-select),
     :deep(.el-input_inner) {
         width: 100%;
+    }
+
+    .btn {
+        margin-right: 0;
     }
     .el-pagination {
         margin-top: 15px;

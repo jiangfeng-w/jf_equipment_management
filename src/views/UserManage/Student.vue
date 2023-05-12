@@ -9,6 +9,7 @@
         <!-- 姓名 -->
         <el-form-item label="学生姓名">
             <el-input
+                clearable
                 v-model="searchForm.name"
                 placeholder="搜索学生姓名"
             ></el-input>
@@ -76,7 +77,6 @@
             <el-button
                 type="primary"
                 :icon="Plus"
-                plain
                 @click="showAddDialog()"
             >
                 新增
@@ -86,7 +86,6 @@
             <el-button
                 type="danger"
                 :icon="Delete"
-                plain
                 :disabled="delDisabled"
                 @click="deleteStudents()"
             >
@@ -498,6 +497,7 @@
     .operate {
         width: 92px;
         margin-bottom: 20px;
+        margin-top: -50px;
         display: flex;
         flex-wrap: nowrap;
     }
@@ -517,6 +517,16 @@
     :deep(.el-form-item) {
         width: 49%;
         margin-right: 10px !important;
+    }
+    // 设置按钮
+    :deep(.el-form-item:nth-last-child(1)) {
+        width: calc(99% - 2px);
+        margin-right: 0 !important;
+
+        .el-form-item__content {
+            width: 99%;
+            justify-content: flex-end;
+        }
     }
     :deep(.el-form-item__content) {
         width: 100%;

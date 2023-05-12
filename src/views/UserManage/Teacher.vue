@@ -9,6 +9,7 @@
         <!-- 姓名 -->
         <el-form-item label="老师姓名">
             <el-input
+                clearable
                 v-model="searchForm.name"
                 placeholder="搜索老师姓名"
             ></el-input>
@@ -16,6 +17,7 @@
         <!-- 专业 -->
         <el-form-item label="所属实验室">
             <el-cascader
+                clearable
                 filterable
                 v-model="searchForm.lab"
                 :options="labs"
@@ -24,7 +26,7 @@
                 @change="changeLab"
             />
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="btn">
             <el-button
                 type="primary"
                 :icon="Search"
@@ -47,7 +49,6 @@
             <el-button
                 type="primary"
                 :icon="Plus"
-                plain
                 @click="showAddDialog()"
             >
                 新增
@@ -57,7 +58,6 @@
             <el-button
                 type="danger"
                 :icon="Delete"
-                plain
                 :disabled="delDisabled"
                 @click="deleteTeachers()"
             >
@@ -455,6 +455,7 @@
     .operate {
         width: 92px;
         margin-bottom: 20px;
+        margin-top: -50px;
         display: flex;
         flex-wrap: nowrap;
     }
@@ -475,6 +476,16 @@
         width: 49%;
         margin-right: 10px !important;
     }
+    // 设置按钮
+    :deep(.el-form-item:nth-last-child(1)) {
+        width: calc(99% - 2px);
+        margin-right: 0 !important;
+
+        .el-form-item__content {
+            width: 99%;
+            justify-content: flex-end;
+        }
+    }
     :deep(.el-form-item__content) {
         width: 100%;
         // padding-left: 80px;
@@ -482,6 +493,9 @@
     :deep(.el-select),
     :deep(.el-input_inner) {
         width: 100%;
+    }
+    .btn {
+        margin-right: 0;
     }
     .el-pagination {
         margin-top: 15px;
