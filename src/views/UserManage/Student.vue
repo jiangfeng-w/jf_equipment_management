@@ -14,23 +14,6 @@
                 placeholder="搜索学生姓名"
             ></el-input>
         </el-form-item>
-        <!-- 培训情况 -->
-        <el-form-item label="培训情况">
-            <el-select
-                v-model="searchForm.trained"
-                multiple
-                clearable
-                filterable
-                placeholder="请选择培训情况"
-            >
-                <el-option
-                    v-for="item in traineds"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                />
-            </el-select>
-        </el-form-item>
         <!-- 专业 -->
         <el-form-item label="学生专业">
             <el-cascader
@@ -55,7 +38,8 @@
                 @change="changeGrade"
             />
         </el-form-item>
-        <el-form-item>
+        <!-- 按钮 -->
+        <el-form-item class="btn">
             <el-button
                 type="primary"
                 :icon="Search"
@@ -206,15 +190,6 @@
                 prop="grade"
                 label="年级"
             ></el-table-column>
-            <el-table-column label="培训情况">
-                <template #default="scope">
-                    {{ trueTrained(scope.row.trained) }}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="train_teacher"
-                label="培训老师"
-            ></el-table-column>
             <!-- 操作 -->
             <el-table-column
                 label="操作"
@@ -307,26 +282,11 @@
         name: '',
         major: [],
         grade: [],
-        trained: [],
         pageSize: 5,
         currentPage: 1,
     })
     const majors = reactive([])
     const grades = reactive([])
-    const traineds = [
-        {
-            value: 0,
-            label: '未培训',
-        },
-        {
-            value: 1,
-            label: '培训中',
-        },
-        {
-            value: 2,
-            label: '已培训',
-        },
-    ]
     const props = {
         expandTrigger: 'hover',
         multiple: true,
@@ -352,7 +312,6 @@
         searchForm.name = ''
         searchForm.major = []
         searchForm.grade = []
-        searchForm.trained = []
         getLength()
         getTableList()
     }
@@ -402,12 +361,6 @@
         loseFocus()
         getLength()
         getTableList()
-    }
-
-    // 是否培训
-    const trueTrained = item => {
-        const cateArr = ['未培训', '培训中', '已培训']
-        return cateArr[item]
     }
 
     // 添加对话框
@@ -497,7 +450,6 @@
     .operate {
         width: 92px;
         margin-bottom: 20px;
-        margin-top: -50px;
         display: flex;
         flex-wrap: nowrap;
     }
@@ -514,19 +466,14 @@
     :deep(.el-cascader) {
         width: 100%;
     }
-    :deep(.el-form-item) {
+    :deep(.el-form-item:not(:last-child)) {
         width: 49%;
         margin-right: 10px !important;
     }
-    // 设置按钮
-    :deep(.el-form-item:nth-last-child(1)) {
-        width: calc(99% - 2px);
-        margin-right: 0 !important;
-
-        .el-form-item__content {
-            width: 99%;
-            justify-content: flex-end;
-        }
+    // 选择倒数第二个框
+    :deep(.el-form-item:nth-last-child(2)) {
+        width: 84%;
+        margin-right: 10px !important;
     }
     :deep(.el-form-item__content) {
         width: 100%;
@@ -535,6 +482,9 @@
     :deep(.el-select),
     :deep(.el-input_inner) {
         width: 100%;
+    }
+    .btn {
+        margin-right: 0;
     }
     .el-pagination {
         margin-top: 15px;

@@ -345,8 +345,8 @@
     // 年级分类
     const grades = [
         {
-            value: '本科生',
-            label: '本科生',
+            value: '本科',
+            label: '本科',
             children: [
                 {
                     value: `本${year - 4}级`,
@@ -367,20 +367,38 @@
             ],
         },
         {
-            value: '研究生',
-            label: '研究生',
+            value: '硕士',
+            label: '硕士',
             children: [
                 {
-                    value: `研${year - 3}级`,
-                    label: `研${year - 3}级`,
+                    value: `硕${year - 3}级`,
+                    label: `硕${year - 3}级`,
                 },
                 {
-                    value: `研${year - 2}级`,
-                    label: `研${year - 2}级`,
+                    value: `硕${year - 2}级`,
+                    label: `硕${year - 2}级`,
                 },
                 {
-                    value: `研${year - 1}级`,
-                    label: `研${year - 1}级`,
+                    value: `硕${year - 1}级`,
+                    label: `硕${year - 1}级`,
+                },
+            ],
+        },
+        {
+            value: '博士',
+            label: '博士',
+            children: [
+                {
+                    value: `博${year - 3}级`,
+                    label: `博${year - 3}级`,
+                },
+                {
+                    value: `博${year - 2}级`,
+                    label: `博${year - 2}级`,
+                },
+                {
+                    value: `博${year - 1}级`,
+                    label: `博${year - 1}级`,
                 },
             ],
         },
