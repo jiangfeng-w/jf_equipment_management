@@ -128,7 +128,7 @@
             class="time"
         >
             <el-date-picker
-                v-model="searchForm.buy_time"
+                v-model="buy_time"
                 type="daterange"
                 :shortcuts="shortcuts"
                 range-separator="~"
@@ -446,6 +446,8 @@
         pageSize: 5,
         currentPage: 1,
     })
+    // 选择时间
+    const buy_time = ref([])
 
     // 搜索
     const search = async () => {
@@ -686,9 +688,13 @@
 
     //#region 选择时间后格式化
     const formatTimeStamp = value => {
-        searchForm.buy_time = value.map(item => {
-            return dayjs(item).valueOf()
-        })
+        if (value) {
+            searchForm.buy_time = value.map(item => {
+                return dayjs(item).valueOf()
+            })
+        } else {
+            searchForm.buy_time = []
+        }
     }
     //#endregion
     //#endregion
@@ -791,9 +797,8 @@
         }
     }
     // 关闭申请对话框
-    const closeDialog = params => {
+    const closeDialog = () => {
         applicationDialog.value = false
-        trainDialog.value = false
     }
 </script>
 <style lang="scss" scoped>
