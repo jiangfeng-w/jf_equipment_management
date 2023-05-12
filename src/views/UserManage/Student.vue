@@ -450,6 +450,7 @@
     .operate {
         width: 92px;
         margin-bottom: 20px;
+        margin-top: -50px;
         display: flex;
         flex-wrap: nowrap;
     }
@@ -472,8 +473,17 @@
     }
     // 选择倒数第二个框
     :deep(.el-form-item:nth-last-child(2)) {
-        width: 84%;
+        width: calc(99% - 2px);
         margin-right: 10px !important;
+    }
+    // 设置按钮
+    :deep(.el-form-item:nth-last-child(1)) {
+        width: calc(99% - 2px);
+        margin-right: 0 !important;
+        .el-form-item__content {
+            width: 99%;
+            justify-content: flex-end;
+        }
     }
     :deep(.el-form-item__content) {
         width: 100%;
